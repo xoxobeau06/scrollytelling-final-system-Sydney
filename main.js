@@ -437,6 +437,194 @@ const StoryNav = {
   }
 };
 
+function animateConceptIcons() {
+  const icons = gsap.utils.toArray('.concept-card__icon img');
+  if (!icons.length) return;
+
+  const loopTrigger = (target) => ({
+    trigger: target,
+    start: 'top 85%',
+    end: 'bottom top',
+    toggleActions: 'play pause resume pause'
+  });
+
+  icons.forEach((img, index) => {
+    const card = img.closest('.concept-card') || img;
+    const src = img.getAttribute('src') || '';
+    const iconKey = src.split('/').pop().replace('.svg', '');
+
+    gsap.from(img, {
+      scrollTrigger: {
+        trigger: card,
+        start: 'top 88%'
+      },
+      autoAlpha: 0,
+      y: 14,
+      scale: 0.6,
+      duration: 0.55 + (index % 4) * 0.08,
+      ease: 'back.out(1.8)'
+    });
+
+    switch (iconKey) {
+      case 'mirror-round':
+        gsap.to(img, {
+          scrollTrigger: loopTrigger(card),
+          y: -3,
+          rotation: 10,
+          yoyo: true,
+          repeat: -1,
+          duration: 2.3 + index * 0.04,
+          ease: 'sine.inOut',
+          transformOrigin: '50% 56%'
+        });
+        break;
+
+      case 'lamp-floor':
+        gsap.to(img, {
+          scrollTrigger: loopTrigger(card),
+          opacity: 0.58,
+          y: -2,
+          yoyo: true,
+          repeat: -1,
+          duration: 0.9,
+          ease: 'power1.inOut'
+        });
+        break;
+
+      case 'stone':
+        gsap.to(img, {
+          scrollTrigger: loopTrigger(card),
+          keyframes: [
+            { rotation: -4, x: -1, duration: 0.16 },
+            { rotation: 3, x: 1, duration: 0.16 },
+            { rotation: 0, x: 0, duration: 1.05 }
+          ],
+          repeat: -1,
+          ease: 'none',
+          transformOrigin: '50% 60%'
+        });
+        break;
+
+      case 'palette':
+        gsap.to(img, {
+          scrollTrigger: loopTrigger(card),
+          rotation: 360,
+          repeat: -1,
+          duration: 9.2,
+          ease: 'none',
+          transformOrigin: '50% 50%'
+        });
+        break;
+
+      case 'ruler':
+        gsap.to(img, {
+          scrollTrigger: loopTrigger(card),
+          rotation: -18,
+          yoyo: true,
+          repeat: -1,
+          duration: 1.5,
+          ease: 'sine.inOut',
+          transformOrigin: '12% 90%'
+        });
+        break;
+
+      case 'sun-moon':
+        gsap.to(img, {
+          scrollTrigger: loopTrigger(card),
+          y: -4,
+          scale: 1.14,
+          yoyo: true,
+          repeat: -1,
+          duration: 1.9,
+          ease: 'sine.inOut'
+        });
+        break;
+
+      case 'amphora':
+        gsap.to(img, {
+          scrollTrigger: loopTrigger(card),
+          y: -6,
+          rotation: 3,
+          yoyo: true,
+          repeat: -1,
+          duration: 2.1,
+          ease: 'sine.inOut',
+          transformOrigin: '50% 80%'
+        });
+        break;
+
+      case 'utensils':
+        gsap.to(img, {
+          scrollTrigger: loopTrigger(card),
+          rotation: 12,
+          yoyo: true,
+          repeat: -1,
+          duration: 1.05,
+          ease: 'sine.inOut',
+          transformOrigin: '50% 14%'
+        });
+        break;
+
+      case 'bell':
+        gsap.to(img, {
+          scrollTrigger: loopTrigger(card),
+          rotation: 14,
+          yoyo: true,
+          repeat: -1,
+          repeatDelay: 1,
+          duration: 0.38,
+          ease: 'sine.inOut',
+          transformOrigin: '50% 10%'
+        });
+        break;
+
+      case 'swatch-book':
+        gsap.to(img, {
+          scrollTrigger: loopTrigger(card),
+          rotationY: 24,
+          yoyo: true,
+          repeat: -1,
+          duration: 1.7,
+          ease: 'sine.inOut',
+          transformPerspective: 700,
+          transformOrigin: '15% 50%'
+        });
+        break;
+
+      case 'gem':
+        gsap.to(img, {
+          scrollTrigger: loopTrigger(card),
+          scale: 1.16,
+          yoyo: true,
+          repeat: -1,
+          duration: 1.05,
+          ease: 'sine.inOut'
+        });
+
+        gsap.to(img, {
+          scrollTrigger: loopTrigger(card),
+          filter: 'drop-shadow(0 0 8px rgba(201,146,47,0.55))',
+          yoyo: true,
+          repeat: -1,
+          duration: 1.05,
+          ease: 'sine.inOut'
+        });
+        break;
+
+      default:
+        gsap.to(img, {
+          scrollTrigger: loopTrigger(card),
+          y: -4,
+          yoyo: true,
+          repeat: -1,
+          duration: 2,
+          ease: 'sine.inOut'
+        });
+        break;
+    }
+  });
+}
+
 function initGSAP() {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
     console.warn('GSAP or ScrollTrigger not loaded');
@@ -593,6 +781,10 @@ function initGSAP() {
       ease: 'back.out(1.4)'
     });
   });
+
+  if (!prefersReducedMotion) {
+    animateConceptIcons();
+  }
 
   gsap.utils.toArray('.spell-scroll:not(.showpiece__code)').forEach((el) => {
     gsap.from(el, {

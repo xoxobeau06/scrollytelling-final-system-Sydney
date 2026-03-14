@@ -574,7 +574,8 @@ figcaption {
 }
 
 .cards-grid--epilogue .concept-card__icon {
-  font-size: clamp(1.8rem, 2.8vw, 2.25rem);
+  width: clamp(1.8rem, 2.8vw, 2.25rem);
+  height: clamp(1.8rem, 2.8vw, 2.25rem);
   margin-bottom: 0;
   line-height: 1;
 }
@@ -616,9 +617,19 @@ figcaption {
 }
 
 .concept-card__icon {
-  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
   margin-bottom: var(--space-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.concept-card__icon img {
+  width: 100%;
+  height: 100%;
   display: block;
+  object-fit: contain;
 }
 
 .concept-card p {
