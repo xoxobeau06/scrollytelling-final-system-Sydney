@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320" role="img" aria-label="Hourglass of time">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f7efe6"/>
+      <stop offset="100%" stop-color="#ead9c5"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff7de" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#8ba8c9" stop-opacity="0.5"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="320" rx="28" fill="url(#bg)"/>
+  <path d="M140 54H260" stroke="#3d2e1a" stroke-width="12" stroke-linecap="round"/>
+  <path d="M140 268H260" stroke="#3d2e1a" stroke-width="12" stroke-linecap="round"/>
+  <path d="M154 66C154 118 185 132 200 154C185 176 154 190 154 256" fill="none" stroke="#3d2e1a" stroke-width="10" stroke-linecap="round"/>
+  <path d="M246 66C246 118 215 132 200 154C215 176 246 190 246 256" fill="none" stroke="#3d2e1a" stroke-width="10" stroke-linecap="round"/>
+  <path d="M165 78C170 122 191 132 200 146C209 132 230 122 235 78Z" fill="url(#glass)" stroke="#8ba8c9" stroke-width="3"/>
+  <path d="M165 244C170 202 191 190 200 162C209 190 230 202 235 244Z" fill="url(#glass)" stroke="#8ba8c9" stroke-width="3"/>
+  <path d="M191 214C197 207 203 207 209 214C203 221 197 221 191 214Z" fill="#e8b84b"/>
+  <path d="M198 154V204" stroke="#e8b84b" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 8"/>
+  <g fill="#c9922f">
+    <circle cx="176" cy="104" r="4"/>
+    <circle cx="222" cy="96" r="4"/>
+    <circle cx="188" cy="118" r="3"/>
+    <circle cx="212" cy="234" r="4"/>
+    <circle cx="182" cy="246" r="3"/>
+    <path d="M304 84L308 96L320 100L308 104L304 116L300 104L288 100L300 96Z"/>
+  </g>
+</svg>

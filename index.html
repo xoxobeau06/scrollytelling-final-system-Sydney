@@ -1,583 +1,768 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lost in the Scroll • Scroll.Master System</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="A scrollytelling fairytale tracing a JavaScript learning journey through magic, enchantment, and wonder."
+  />
+  <title>Lost in the Scroll — A Fairytale of JavaScript</title>
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Courier+Prime:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap"
-      rel="stylesheet"
-    />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="variables.css?v=20260310" />
-    <link rel="stylesheet" href="styles.css?v=20260310" />
-  </head>
+  <link rel="stylesheet" href="variables.css" />
+  <link rel="stylesheet" href="styles.css" />
 
-  <body>
-    <a class="skip-link" href="#main">Skip to content</a>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
 
-    <button id="themeToggle" type="button" aria-label="Toggle theme">Dawn</button>
+  <script>
+    window.addEventListener('load', () => {
+      if (typeof ScrollSmoother === 'undefined') {
+        window.ScrollSmoother = {
+          create: () => null
+        };
+      }
+    });
+  </script>
+  <script src="https://assets.codepen.io/16327/ScrollSmoother.min.js" defer></script>
+</head>
 
-    <main id="main">
-      <!-- =========================
-           HERO (H1 only here)
-           ========================= -->
-      <section class="section section--hero" id="hero">
-        <div class="hero__overlay"></div>
-        <div class="hero__scroll-fade" aria-hidden="true"></div>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-        <div class="hero__content flow">
-          <h1 class="hero__title">
-            SCROLL.MASTER<br />
-            <span class="hero__subtitle">System</span>
-          </h1>
+  <div
+    class="reading-progress"
+    role="progressbar"
+    aria-label="Reading progress"
+    aria-valuenow="0"
+    aria-valuemin="0"
+    aria-valuemax="100"
+  ></div>
 
-          <p class="hero__tagline">
-            A system where spells are written, named, and remembered.<br />
-            Inspired by strategic card games like Magic: The Gathering.
+  <canvas id="stars-canvas" aria-hidden="true"></canvas>
+
+  <nav class="nav" aria-label="Main navigation">
+    <a href="#hero" class="nav__logo" aria-label="Return to beginning of story">
+      ✦ Lost in the Scroll
+    </a>
+
+    <div class="nav__controls">
+      <button id="theme-toggle" class="btn-theme" aria-label="Switch to dark mode">
+        ☽ Dusk
+      </button>
+    </div>
+  </nav>
+
+  <aside class="story-nav" aria-label="Story chapter selector">
+    <a href="#ch-devtools" class="story-nav__link is-active">Mirror</a>
+    <a href="#ch-variables" class="story-nav__link">Jars</a>
+    <a href="#ch-conditionals" class="story-nav__link">Crossroads</a>
+    <a href="#ch-events" class="story-nav__link">Stones</a>
+    <a href="#ch-tokens" class="story-nav__link">Palette</a>
+    <a href="#ch-storage" class="story-nav__link">Crystal</a>
+    <a href="#epilogue" class="story-nav__link">Fin</a>
+  </aside>
+
+  <div id="smooth-wrapper">
+    <div id="smooth-content">
+      <main id="main-content">
+
+        <!-- HERO -->
+        <section class="hero" id="hero" aria-labelledby="hero-title">
+          <div class="mist-bg" aria-hidden="true">
+            <div
+              class="mist-bg__layer"
+              style="width:600px;height:500px;background:var(--mist-gold);top:-100px;right:-150px;"
+            ></div>
+            <div
+              class="mist-bg__layer"
+              style="width:400px;height:400px;background:var(--mist-rose);bottom:-100px;left:-100px;"
+            ></div>
+          </div>
+
+          <span class="hero__eyebrow chapter-label" aria-label="A scrollytelling experience">
+            ✦ &nbsp; A Scrollytelling Experience &nbsp; ✦
+          </span>
+
+          <h1 class="hero__title" id="hero-title">Lost in the Scroll</h1>
+          <p class="hero__subtitle">A Fairytale of JavaScript</p>
+
+          <p class="hero__desc">
+            Once upon a time, in a kingdom woven from logic and light, a young
+            apprentice set out to learn the ancient tongue of JavaScript.
+            This is that story — told in enchantments, spells, and scrolls.
           </p>
 
-          <a href="#first-spell" class="hero__cta">Scroll to Begin</a>
-        </div>
-      </section>
+          <img
+            src="assets/svg/book-hero.svg"
+            alt="An enchanted open book glowing with golden code"
+            class="illustration hero__illustration"
+            data-speed="0.7"
+          />
 
-      <!-- =========================
-           CHAPTER 1
-           ========================= -->
-      <section class="section section--chapter" id="first-spell">
-        <div class="container first-spell">
-          <div class="first-spell__left">
-            <div class="panel panel--story flow">
-              <h2 class="chapter-title">The First Spell</h2>
+          <div class="hero__scroll-cue" aria-hidden="true">
+            <span>scroll to begin</span>
+            <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 5v14M5 12l7 7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </div>
+        </section>
 
-              <p>
-                Every Scroll Master starts with a simple spell. For me, it was
-               console.log It didn’t
-                change the world. It just revealed it. Seeing my values printed
-                out in the console was the first moment the system felt visible
-                instead of mysterious.
-              </p>
+        <!-- DEVTOOLS -->
+        <section class="chapter ch-devtools" id="ch-devtools" aria-labelledby="ch-devtools-title">
+          <div class="mist-bg" aria-hidden="true">
+            <div
+              class="mist-bg__layer"
+              style="width:500px;height:400px;background:var(--mist-gold);top:10%;left:60%;"
+            ></div>
+          </div>
 
-              <p>
-                Before that, code felt like guessing. After that, it felt like
-                observing. And observation is where control begins.
-              </p>
+          <div class="chapter__inner">
+            <span class="chapter-label">Chapter One</span>
+
+            <div class="ornament" aria-hidden="true">
+              <span class="ornament__line"></span>
+              <span class="ornament__symbol">◉</span>
+              <span class="ornament__line"></span>
             </div>
 
-            <div class="panel panel--code flow">
-              <pre class="codeblock"><code>console.log("The scroll opens.");
+            <h2 class="chapter__heading" id="ch-devtools-title">The Oracle's Mirror</h2>
 
-→ The scroll opens</code></pre>
-            </div>
-          </div>
+            <div class="two-col">
+              <div class="chapter__body">
+                <p class="drop-cap">
+                  Before any great spell could be cast, the apprentice learned the first
+                  and most vital rule of the enchanted palace:
+                  <em>always watch the mirror</em>.
+                  Tucked behind the kingdom's surface lay the Oracle's Mirror — the browser's
+                  DevTools — a hidden pane of glass through which all truths could be seen.
+                </p>
 
-          <div class="first-spell__right flow">
-            <img
-              class="spell-card"
-              src="scrollytelling-scrollMaster-System-Sydney-main/assets/images/ChatGPT Image Feb 27, 2026, 10_02_45 PM.png"
-              alt="A glowing spell sigil on a fantasy card frame"
-            />
-          </div>
-        </div>
-      </section>
+                <p>
+                  This chapter represents one of the first coding tools I learned in class:
+                  using <span class="keyword">console.log()</span> and browser DevTools to check
+                  what my code was doing, inspect values, and catch mistakes while building.
+                </p>
 
-      <!-- =========================
-           CHAPTER 2
-           ========================= -->
-      <section class="section section--chapter section--alt" id="naming-the-deck">
-        <div class="container grimoire">
-          <header class="grimoire__header flow">
-            <h2 class="grimoire__title">Naming Your Grimoire</h2>
-            <p class="grimoire__subtitle">
-              A Sigil Without Intention Holds No Power
-            </p>
-          </header>
+                <p>
+                  To speak with the mirror, she used an incantation so simple it seemed
+                  almost too humble for magic: <span class="keyword">console.log()</span>.
+                  Whatever she whispered, the mirror repeated back — faithful and precise.
+                </p>
 
-          <div class="grimoire__books">
-            <!-- Mutable / let -->
-            <figure class="book flow">
-              <img
-                class="book__img"
-                src="scrollytelling-scrollMaster-System-Sydney-main/assets/svg/book.svg"
-                alt="Open book for let example"
-              />
+                <p>
+                  “Open it with <span class="keyword">F12</span>,” said the wizard,
+                  “and let it become your most trusted companion. When a spell returns
+                  the wrong answer, look to the mirror first.”
+                </p>
 
-              <div class="book__content">
-                <div class="book__text">
-                  <p>
-                    Mutable Sigil enters the Archive without a bound value. When
-                    you inscribe a value, it becomes that value. You may
-                    inscribe a new value at any time.
-                  </p>
+                <div class="spell-scroll" role="region" aria-label="JavaScript code: console methods">
+<span class="cm">// Speak to the mirror</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"The spell is working ✓"</span>);
+
+<span class="cm">// Reveal the contents of any jar</span>
+<span class="kw">const</span> <span class="fn">secret</span> = <span class="nm">42</span>;
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"The answer:"</span>, <span class="fn">secret</span>);
+
+<span class="cm">// Warn of danger</span>
+<span class="fn">console</span>.<span class="fn">warn</span>(<span class="str">"⚠ Potion unstable"</span>);
+
+<span class="cm">// Sound the alarm</span>
+<span class="fn">console</span>.<span class="fn">error</span>(<span class="str">"✗ Enchantment failed"</span>);
                 </div>
-
-                <pre class="book__code"><code>
-let sigilName;
-
-sigilName = "Tide Invocation";
-
-sigilName = "Bloom Ascendant";
-      </code></pre>
               </div>
-            </figure>
 
-            <!-- Const / bound -->
-            <figure class="book flow">
-              <img
-                class="book__img"
-                src="scrollytelling-scrollMaster-System-Sydney-main/assets/svg/book.svg"
-                alt="Open book for const example"
-              />
-
-              <div class="book__content">
-                <div class="book__text">
-                  <p>
-                    Bound Sigil must be inscribed with a value. Once bound, its
-                    value cannot change.
-                  </p>
-                </div>
-
-                <pre class="book__code"><code>
-const masterSigil = "Light of Structure";
-
-// masterSigil = "Ember of Change";
-// Not allowed
-      </code></pre>
-              </div>
-            </figure>
-          </div>
-
-          <p class="grimoire__body flow">
-            A spell without a name is chaos. When I learned <code>let</code> and
-            <code>const</code>, I realized naming wasn’t cosmetic — it was
-            structure. Some values are meant to shift and evolve. Others are
-            meant to stay anchored. Understanding the difference made my code
-            calmer. Less frantic. More intentional. Naming something well meant
-            I could find it again later, like labeling a spellbook page so I
-            wouldn’t lose it.
-          </p>
-        </div>
-      </section>
-
-      <!-- =========================
-           CHAPTER 3
-           ========================= -->
-      <section class="section section--chapter" id="the-switch">
-        <div class="container fork">
-          <header class="fork__header flow">
-            <h2 class="fork__title">The Forked Path</h2>
-
-            <p class="fork__lede">
-              Some spells resolve immediately. Others require the right
-              conditions. This is
-              <span class="fork__highlight">conditional logic</span>, the path a
-              spell takes when invoked.
-            </p>
-
-            <!-- keep button NOT flow so it doesn’t fade out mid-click -->
-            <button class="fork__cta" id="choosePathBtn" type="button">
-              Choose Path
-            </button>
-          </header>
-
-          <!-- Cards: you can choose flow or not; I’m setting flow on the grid so it reveals as a unit -->
-          <div class="fork__grid flow">
-            <!-- WIZARD -->
-            <article class="fork-card fork-card--wizard">
-              <h3 class="fork-card__title">Wizard</h3>
-              <p class="fork-card__desc">
-                Wizards prepare before they act.<br />
-                They check conditions.<br />
-                They follow rules.
-              </p>
-
-              <pre class="fork-code"><code>let mana = 5;
-let requiredMana = 3;
-
-if (mana &gt;= requiredMana) {
-  castSpell("Arcane Insight");
-} else {
-  prepareMoreMana();
-}</code></pre>
-            </article>
-
-            <!-- SORCERER -->
-            <article class="fork-card fork-card--sorcerer">
-              <h3 class="fork-card__title">Sorcerer</h3>
-              <p class="fork-card__desc">
-                Sorcerers act from instinct.<br />
-                They react to what they feel in the moment.
-              </p>
-
-              <pre class="fork-code"><code>let emotion = "focused";
-
-if (emotion === "focused") {
-  unleashPower("Ember Surge");
-} else {
-  retreatAndRegather();
-}</code></pre>
-            </article>
-          </div>
-
-          <p class="fork__footer flow">
-            This is when the system stopped being static. An if statement felt
-            like setting rules for how the world responds. If this is true, do
-            this. Else, do something else. It sounds simple. But it was the
-            first time I understood that code isn’t just instructions. It’s
-            possibility. And possibility is where the magic lives.
-          </p>
-        </div>
-      </section>
-
-      <!-- =========================
-           CHAPTER 4
-           ========================= -->
-      <section class="section section--chapter section--alt" id="reacting">
-        <div class="container energy">
-          <header class="energy__header flow">
-            <h2 class="energy__title">Channeling Energy</h2>
-
-            <p class="energy__lede">
-              When a creature becomes tapped, something happens. The game checks
-              the action and resolves the effect. On the web, it works the same
-              way. When a user clicks, hovers, or presses a key, your code is
-              waiting. That waiting is an
-              <span class="energy__highlight">event listener</span>.
-            </p>
-          </header>
-
-          <div class="energy__panel">
-            <div class="energy__left flow">
-              <p class="energy__prompt">
-                <strong>Try it!</strong><br />
-                Click the card to tap it!
-              </p>
-
-              <!-- keep button NOT flow so it won’t fade while interacting -->
-              <button
-                class="tap-card"
-                id="tapCard"
-                type="button"
-                aria-pressed="false"
-              >
+              <figure>
                 <img
-                  src="scrollytelling-scrollMaster-System-Sydney-main/assets/images/ChatGPT Image Feb 27, 2026, 10_02_45 PM.png"
-                  alt="A spell card. Click to tap it."
+                  src="assets/svg/functions.svg"
+                  alt="A glowing wand conjuring visible output representing the console as a tool for revealing hidden truths"
+                  class="illustration"
+                  data-speed="0.85"
                 />
-              </button>
+                <figcaption>The wand that speaks truth to the mirror</figcaption>
+              </figure>
             </div>
 
-            <div class="energy__right flow">
-              <div class="energy__codeWrap">
-                <pre class="energy__code"><code>// Event listener metaphor
+            <div class="cards-grid">
+              <div class="concept-card">
+                <span class="concept-card__icon" aria-hidden="true">🪞</span>
+                <h3>console.log</h3>
+                <p>The everyday incantation. Prints values into the mirror so I can inspect what my code is doing.</p>
+              </div>
+              <div class="concept-card">
+                <span class="concept-card__icon" aria-hidden="true">⚠️</span>
+                <h3>console.warn</h3>
+                <p>A warning spell that hints something may be off before it becomes a full break.</p>
+              </div>
+              <div class="concept-card">
+                <span class="concept-card__icon" aria-hidden="true">🔴</span>
+                <h3>console.error</h3>
+                <p>The alarm bell. When the enchantment fails, the mirror tells me where to look first.</p>
+              </div>
+            </div>
+          </div>
+        </section>
 
-card.addEventListener("click", () => {
-  card.tap();
+        <!-- VARIABLES -->
+        <section class="chapter ch-variables" id="ch-variables" aria-labelledby="ch-variables-title">
+          <div class="mist-bg" aria-hidden="true">
+            <div
+              class="mist-bg__layer"
+              style="width:450px;height:450px;background:var(--mist-rose);top:20%;right:10%;"
+            ></div>
+          </div>
+
+          <div class="chapter__inner">
+            <span class="chapter-label">Chapter Two</span>
+
+            <div class="ornament" aria-hidden="true">
+              <span class="ornament__line"></span>
+              <span class="ornament__symbol">⚗</span>
+              <span class="ornament__line"></span>
+            </div>
+
+            <h2 class="chapter__heading" id="ch-variables-title">The Enchanted Jars</h2>
+
+            <div class="two-col">
+              <figure>
+                <img
+                  src="assets/svg/variables.svg"
+                  alt="Two enchanted jars glowing gold and rose on a wooden shelf, each labeled const and let"
+                  class="illustration"
+                  data-speed="0.9"
+                />
+                <figcaption>The two sacred vessels of the apothecary</figcaption>
+              </figure>
+
+              <div class="chapter__body">
+                <p class="drop-cap">
+                  Deep in the apothecary of the enchanted palace, the apprentice discovered
+                  two remarkable jars upon a dusty shelf. Each was sealed differently —
+                  one with wax so hard no flame could melt it, and one with a cork that
+                  could be lifted and replaced at will.
+                </p>
+
+                <p>
+                  This chapter represents variables in JavaScript. In class, I learned how
+                  <span class="keyword">const</span> and <span class="keyword">let</span> both
+                  store values, but they behave differently depending on whether that value
+                  needs to stay the same or change over time.
+                </p>
+
+                <p>
+                  “These,” whispered the royal wizard, “are your <em>variables</em>.
+                  Each holds a magical essence — a number, a name, truth or a lie.”
+                </p>
+
+                <p>
+                  The sealed jar was <span class="keyword">const</span> —
+                  once filled with moonlight or memory, its contents could never change.
+                  Perfect for values written in stone.
+                </p>
+
+                <p>
+                  The corked jar was <span class="keyword">let</span> —
+                  mutable as the tides, to be emptied and refilled with each new dawn.
+                  This is where the apprentice kept her ever-changing secrets.
+                </p>
+
+                <div class="spell-scroll" role="region" aria-label="JavaScript code: const and let declarations">
+<span class="cm">// The sealed jar — never changes</span>
+<span class="kw">const</span> <span class="fn">moonlight</span> = <span class="str">"unchanging silver"</span>;
+<span class="cm">// moonlight = "gold"; // ✗ TypeError!</span>
+
+<span class="cm">// The corked jar — yields gracefully</span>
+<span class="kw">let</span> <span class="fn">season</span> = <span class="str">"autumn"</span>;
+<span class="fn">season</span> = <span class="str">"winter"</span>; <span class="cm">// ✓ enchantment holds</span>
+
+<span class="cm">// Prefer const. Use let when</span>
+<span class="cm">// the value must change.</span>
+                </div>
+              </div>
+            </div>
+
+            <blockquote>
+              “A name given to a thing is the first magic. Before you can cast a spell,
+              you must call it by its true name.”
+            </blockquote>
+          </div>
+        </section>
+
+        <!-- CONDITIONALS -->
+        <section class="chapter ch-conditionals ch-loops" id="ch-conditionals" aria-labelledby="ch-conditionals-title">
+          <div class="mist-bg" aria-hidden="true">
+            <div
+              class="mist-bg__layer"
+              style="width:550px;height:550px;background:var(--mist-forest);bottom:0;left:20%;"
+            ></div>
+          </div>
+
+          <div class="chapter__inner">
+            <span class="chapter-label">Chapter Three</span>
+
+            <div class="ornament" aria-hidden="true">
+              <span class="ornament__line"></span>
+              <span class="ornament__symbol">⚖</span>
+              <span class="ornament__line"></span>
+            </div>
+
+            <h2 class="chapter__heading" id="ch-conditionals-title">The Crossroads</h2>
+
+            <div class="two-col">
+              <div class="chapter__body">
+                <p class="drop-cap">
+                  Deep in the enchanted wood, every path split in two. Code, like a traveler,
+                  must always choose. These branching moments were called
+                  <em>conditionals</em> — decisions made by the kingdom's logic in a single breath.
+                </p>
+
+                <p>
+                  This chapter represents the way I learned decision-making in class.
+                  With <span class="keyword">if</span>, <span class="keyword">else</span>, and
+                  <span class="keyword">classList.toggle()</span>, I started to understand how
+                  JavaScript can change what happens based on conditions or user interaction.
+                </p>
+
+                <p>
+                  If a condition was true, one door opened. If it was not, another
+                  welcomed her. The <span class="keyword">if</span> statement held
+                  the enchantment of choice, and where there was an <em>if</em>,
+                  an <span class="keyword">else</span> waited patiently in shadow.
+                </p>
+
+                <p>
+                  But the apprentice also learned a gentler magic:
+                  <span class="keyword">classList.toggle()</span> — a single whisper
+                  that revealed a hidden door, then sealed it again on the next breath.
+                  No decision required. One call opened; one call closed.
+                </p>
+
+                <div class="spell-scroll" role="region" aria-label="JavaScript code: conditionals and classList.toggle">
+<span class="cm">// The forking path</span>
+<span class="kw">const</span> <span class="fn">hour</span> = <span class="kw">new</span> <span class="fn">Date</span>().<span class="fn">getHours</span>();
+
+<span class="kw">if</span> (hour &lt; <span class="nm">12</span>) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Good morning ☀"</span>);
+} <span class="kw">else if</span> (hour &lt; <span class="nm">18</span>) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Good afternoon 🌤"</span>);
+} <span class="kw">else</span> {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Good evening ☽"</span>);
+}
+
+<span class="cm">// Toggle the enchanted door</span>
+<span class="kw">const</span> <span class="fn">door</span> = <span class="fn">document</span>.<span class="fn">querySelector</span>(<span class="str">'.menu'</span>);
+<span class="fn">door</span>.<span class="fn">classList</span>.<span class="fn">toggle</span>(<span class="str">'is-open'</span>);
+                </div>
+              </div>
+
+              <figure>
+                <img
+                  src="assets/svg/loops.svg"
+                  alt="A moonlit forest path splitting in two directions, representing if and else"
+                  class="illustration"
+                  data-speed="0.8"
+                />
+                <figcaption>The forking path of conditional logic</figcaption>
+              </figure>
+            </div>
+
+            <blockquote>
+              “Every door in the kingdom is either open or closed.
+              Knowing which — and knowing when to change it — is the whole of the art.”
+            </blockquote>
+          </div>
+        </section>
+
+        <!-- EVENTS SHOWPIECE -->
+        <section class="showpiece" id="ch-events" aria-labelledby="ch-events-title">
+          <div class="showpiece__sticky" aria-live="polite">
+            <div class="showpiece__stage">
+
+              <div class="showpiece__step">
+                <span class="chapter-label">Chapter Four</span>
+
+                <div class="ornament" aria-hidden="true">
+                  <span class="ornament__line"></span>
+                  <span class="ornament__symbol">◎</span>
+                  <span class="ornament__line"></span>
+                </div>
+
+                <h2 id="ch-events-title" class="showpiece__title">The Listening Stones</h2>
+
+                <p class="showpiece__text">
+                  This chapter represents interactivity in JavaScript. In class, I learned
+                  that events let the page wait for something to happen — like a click,
+                  key press, or submit — and <span class="keyword">addEventListener()</span>
+                  is the spell that tells the page how to respond.
+                </p>
+
+                <p class="showpiece__text">
+                  Scattered through the palace were ancient stones humming with quiet
+                  attention — waiting for a click, a keystroke, a scroll.
+                </p>
+
+                <span class="showpiece__emoji" aria-hidden="true">◎</span>
+              </div>
+
+              <div class="showpiece__step">
+                <span class="chapter-label">The Awakening</span>
+
+                <p class="showpiece__text">
+                  To awaken a listening stone, declare the event type and provide the
+                  enchantment to cast when it stirs.
+                </p>
+
+                <div class="spell-scroll showpiece__code" role="region" aria-label="addEventListener syntax">
+<span class="cm">// Place a listening stone</span>
+<span class="kw">const</span> <span class="fn">stone</span> = <span class="fn">document</span>
+  .<span class="fn">querySelector</span>(<span class="str">'.enchanted-door'</span>);
+
+<span class="fn">stone</span>.<span class="fn">addEventListener</span>(
+  <span class="str">'click'</span>,
+  (event) =&gt; {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"The stone awakens!"</span>);
+  }
+);
+                </div>
+              </div>
+
+              <div class="showpiece__step">
+                <span class="chapter-label">The Event Object</span>
+
+                <p class="showpiece__text">
+                  Every event carries its own scroll of details — what happened,
+                  where it happened, and what element caused it.
+                </p>
+
+                <div class="spell-scroll showpiece__code" role="region" aria-label="Event object properties">
+<span class="cm">// The event scroll carries details</span>
+<span class="fn">button</span>.<span class="fn">addEventListener</span>(<span class="str">'click'</span>, (e) =&gt; {
+  <span class="fn">console</span>.<span class="fn">log</span>(e.<span class="fn">type</span>);   <span class="cm">// "click"</span>
+  <span class="fn">console</span>.<span class="fn">log</span>(e.<span class="fn">target</span>); <span class="cm">// the element</span>
+
+  <span class="cm">// Prevent the default magic</span>
+  e.<span class="fn">preventDefault</span>();
+
+  <span class="cm">// Seal the sound in the room</span>
+  e.<span class="fn">stopPropagation</span>();
+});
+                </div>
+              </div>
+
+              <div class="showpiece__step">
+                <span class="chapter-label">The Many Disturbances</span>
+
+                <p class="showpiece__text">
+                  The stones listened for many kinds of disturbances — not just clicks,
+                  but keystrokes, submissions, and other moments of interaction.
+                </p>
+
+                <div class="spell-scroll showpiece__code" role="region" aria-label="Common event types">
+<span class="cm">// A click on a button</span>
+<span class="fn">btn</span>.<span class="fn">addEventListener</span>(<span class="str">'click'</span>, <span class="fn">openDoor</span>);
+
+<span class="cm">// A key pressed</span>
+<span class="fn">document</span>.<span class="fn">addEventListener</span>(<span class="str">'keydown'</span>, (e) =&gt; {
+  <span class="kw">if</span> (e.<span class="fn">key</span> === <span class="str">'Escape'</span>) <span class="fn">closeDoor</span>();
 });
 
-// Current state: <span id="tapState">untapped</span>
-<span id="tapAfterBlock" hidden>
-// After click
-// Current state: <span id="tapNextState">tapped</span>
-</span></code></pre>
+<span class="cm">// A form submitted</span>
+<span class="fn">form</span>.<span class="fn">addEventListener</span>(<span class="str">'submit'</span>, (e) =&gt; {
+  e.<span class="fn">preventDefault</span>();
+  <span class="fn">castSpell</span>(e.<span class="fn">target</span>);
+});
+                </div>
               </div>
-
-              <p class="energy__body">
-                Before events, everything just… ran. With event listeners, the
-                system started waiting. Listening. Reacting. When a user clicks,
-                something changes. That felt powerful, not because it was
-                complicated, but because it meant the interface could respond.
-                It wasn’t just a script anymore. It was interaction.
-              </p>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- =========================
-           CHAPTER 5
-           ========================= -->
-      <section class="section section--chapter" id="the-system">
-        <div class="container schools">
-          <header class="schools__header flow">
-            <h2 class="schools__title">The Five Schools</h2>
+        <!-- TOKENS -->
+        <section class="chapter ch-tokens" id="ch-tokens" aria-labelledby="ch-tokens-title">
+          <div class="mist-bg" aria-hidden="true">
+            <div
+              class="mist-bg__layer"
+              style="width:480px;height:480px;background:rgba(139,168,201,0.14);top:30%;right:5%;"
+            ></div>
+          </div>
 
-            <div class="schools__poem">
-              <p>In Scroll Master, each school has an identity.</p>
-              <p>One represents structure.</p>
-              <p>One represents growth.</p>
-              <p>One represents knowledge.</p>
-              <p>One represents impulse.</p>
-              <p>One represents ambition.</p>
+          <div class="chapter__inner">
+            <span class="chapter-label">Chapter Five</span>
+
+            <div class="ornament" aria-hidden="true">
+              <span class="ornament__line"></span>
+              <span class="ornament__symbol">⬡</span>
+              <span class="ornament__line"></span>
             </div>
 
-            <p class="schools__body">
-              No one debates their meaning mid-game. The system works because
-              everyone agrees on what those colors stand for. Design tokens work
-              the same way. When I stopped scattering hex codes everywhere and
-              defined variables instead, I wasn’t just styling. I was creating a
-              language. And language makes systems scalable.
-            </p>
-          </header>
+            <h2 class="chapter__heading" id="ch-tokens-title">The Alchemist's Palette</h2>
 
-          <!-- Grid reveal as a unit -->
-          <div class="schools__grid flow" aria-label="The five schools">
-            <!-- WHITE — Structure -->
-            <figure class="school school--white">
-              <div class="school__icon" aria-hidden="true">
-                <svg
-                  class="school__glyph"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  fill="currentColor"
-                  viewBox="0 0 256 256"
-                >
-                  <path
-                    d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z"
-                  ></path>
-                </svg>
+            <div class="two-col">
+              <figure>
+                <img
+                  src="assets/svg/events.svg"
+                  alt="A glowing crystal orb radiating colored light, representing CSS custom properties as a palette of named essences"
+                  class="illustration"
+                  data-speed="0.88"
+                />
+                <figcaption>The palette of named color essences</figcaption>
+              </figure>
+
+              <div class="chapter__body">
+                <p class="drop-cap">
+                  In the alchemist's tower, all colors and measures were kept in named
+                  vials upon a long shelf. Each bore a label beginning with two dashes —
+                  the sigil of a <em>CSS custom property</em>.
+                </p>
+
+                <p>
+                  This chapter connects most directly to my design background. In class,
+                  I learned how design tokens and CSS variables can store reusable values
+                  for color, spacing, and typography so a whole site can stay consistent
+                  and change more easily.
+                </p>
+
+                <p>
+                  When the palace wished to change its mood, only the vials needed refilling.
+                  Every room that drew from them transformed at once.
+                </p>
+
+                <p>
+                  These named essences were called <span class="keyword">design tokens</span> —
+                  the single source of truth for color, spacing, shadow, and more.
+                  Change one token and every enchantment using it would shift accordingly.
+                </p>
+
+                <p>
+                  The apprentice learned to declare them in <span class="keyword">:root</span>
+                  — the ancestral hall at the top of the palace — and summon them
+                  anywhere with <span class="keyword">var()</span>.
+                </p>
+
+                <div class="spell-scroll" role="region" aria-label="CSS custom properties code example">
+<span class="cm">/* Declare in the ancestral hall */</span>
+<span class="fn">:root</span> {
+  <span class="kw">--color-gold</span>: <span class="nm">#c9922f</span>;
+  <span class="kw">--space-md</span>: <span class="nm">2rem</span>;
+  <span class="kw">--font-body</span>: <span class="str">"Crimson Pro"</span>, serif;
+}
+
+<span class="cm">/* Summon anywhere in the kingdom */</span>
+<span class="fn">.chapter</span> {
+  <span class="kw">color</span>: <span class="fn">var</span>(<span class="kw">--color-gold</span>);
+  <span class="kw">padding</span>: <span class="fn">var</span>(<span class="kw">--space-md</span>);
+  <span class="kw">font-family</span>: <span class="fn">var</span>(<span class="kw">--font-body</span>);
+}
+                </div>
               </div>
+            </div>
 
-              <figcaption class="school__label">
-                <span class="school__name">White</span>
-                <span class="school__token">--color-structure</span>
-              </figcaption>
-            </figure>
-
-            <!-- GREEN — Growth -->
-            <figure class="school school--green">
-              <div class="school__icon" aria-hidden="true">
-                <svg
-                  class="school__glyph"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  fill="currentColor"
-                  viewBox="0 0 256 256"
-                >
-                  <path
-                    d="M198.1,62.59a76,76,0,0,0-140.2,0A71.71,71.71,0,0,0,16,127.8C15.9,166,48,199,86.14,200A72.09,72.09,0,0,0,120,192.47V232a8,8,0,0,0,16,0V192.47A72.17,72.17,0,0,0,168,200l1.82,0C208,199,240.11,166,240,127.8A71.71,71.71,0,0,0,198.1,62.59ZM169.45,184a56.08,56.08,0,0,1-33.45-10v-41l43.58-21.78a8,8,0,1,0-7.16-14.32L136,115.06V88a8,8,0,0,0-16,0v51.06L83.58,120.84a8,8,0,1,0-7.16,14.32L120,156.94v17a56,56,0,0,1-33.45,10C56.9,183.23,31.92,157.52,32,127.84A55.77,55.77,0,0,1,67.11,76a8,8,0,0,0,4.53-4.67,60,60,0,0,1,112.72,0A8,8,0,0,0,188.89,76,55.79,55.79,0,0,1,224,127.84C224.08,157.52,199.1,183.23,169.45,184Z"
-                  ></path>
-                </svg>
+            <div class="cards-grid">
+              <div class="concept-card">
+                <span class="concept-card__icon" aria-hidden="true">🎨</span>
+                <h3>Color Tokens</h3>
+                <p>Named values that let one change ripple through the whole palace.</p>
               </div>
-
-              <figcaption class="school__label">
-                <span class="school__name">Green</span>
-                <span class="school__token">--color-growth</span>
-              </figcaption>
-            </figure>
-
-            <!-- BLUE — Knowledge -->
-            <figure class="school school--blue">
-              <div class="school__icon" aria-hidden="true">
-                <svg
-                  class="school__glyph"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  fill="currentColor"
-                  viewBox="0 0 256 256"
-                >
-                  <path
-                    d="M174,47.75a254.19,254.19,0,0,0-41.45-38.3,8,8,0,0,0-9.18,0A254.19,254.19,0,0,0,82,47.75C54.51,79.32,40,112.6,40,144a88,88,0,0,0,176,0C216,112.6,201.49,79.32,174,47.75ZM128,216a72.08,72.08,0,0,1-72-72c0-57.23,55.47-105,72-118,16.53,13,72,60.75,72,118A72.08,72.08,0,0,1,128,216Zm55.89-62.66a57.6,57.6,0,0,1-46.56,46.55A8.75,8.75,0,0,1,136,200a8,8,0,0,1-1.32-15.89c16.57-2.79,30.63-16.85,33.44-33.45a8,8,0,0,1,15.78,2.68Z"
-                  ></path>
-                </svg>
+              <div class="concept-card">
+                <span class="concept-card__icon" aria-hidden="true">📐</span>
+                <h3>Spacing Tokens</h3>
+                <p>Consistent rhythm for layouts, margins, and breathing room across the site.</p>
               </div>
-
-              <figcaption class="school__label">
-                <span class="school__name">Blue</span>
-                <span class="school__token">--color-knowledge</span>
-              </figcaption>
-            </figure>
-
-            <!-- RED — Impulse -->
-            <figure class="school school--red">
-              <div class="school__icon" aria-hidden="true">
-                <svg
-                  class="school__glyph"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  fill="currentColor"
-                  viewBox="0 0 256 256"
-                >
-                  <path
-                    d="M183.89,153.34a57.6,57.6,0,0,1-46.56,46.55A8.75,8.75,0,0,1,136,200a8,8,0,0,1-1.32-15.89c16.57-2.79,30.63-16.85,33.44-33.45a8,8,0,0,1,15.78,2.68ZM216,144a88,88,0,0,1-176,0c0-27.92,11-56.47,32.66-84.85a8,8,0,0,1,11.93-.89l24.12,23.41,22-60.41a8,8,0,0,1,12.63-3.41C165.21,36,216,84.55,216,144Zm-16,0c0-46.09-35.79-85.92-58.21-106.33L119.52,98.74a8,8,0,0,1-13.09,3L80.06,76.16C64.09,99.21,56,122,56,144a72,72,0,0,0,144,0Z"
-                  ></path>
-                </svg>
+              <div class="concept-card">
+                <span class="concept-card__icon" aria-hidden="true">🌙</span>
+                <h3>Theme Switching</h3>
+                <p>Update the tokens, and the whole world can shift from dawn to dusk.</p>
               </div>
-
-              <figcaption class="school__label">
-                <span class="school__name">Red</span>
-                <span class="school__token">--color-impulse</span>
-              </figcaption>
-            </figure>
-
-            <!-- BLACK — Ambition -->
-            <figure class="school school--black">
-              <div class="school__icon" aria-hidden="true">
-                <svg
-                  class="school__glyph"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  fill="currentColor"
-                  viewBox="0 0 256 256"
-                >
-                  <path
-                    d="M92,104a28,28,0,1,0,28,28A28,28,0,0,0,92,104Zm0,40a12,12,0,1,1,12-12A12,12,0,0,1,92,144Zm72-40a28,28,0,1,0,28,28A28,28,0,0,0,164,104Zm0,40a12,12,0,1,1,12-12A12,12,0,0,1,164,144ZM128,16C70.65,16,24,60.86,24,116c0,34.1,18.27,66,48,84.28V216a16,16,0,0,0,16,16h80a16,16,0,0,0,16-16V200.28C213.73,182,232,150.1,232,116,232,60.86,185.35,16,128,16Zm44.12,172.69a8,8,0,0,0-4.12,7V216H152V192a8,8,0,0,0-16,0v24H120V192a8,8,0,0,0-16,0v24H88V195.69a8,8,0,0,0-4.12-7C56.81,173.69,40,145.84,40,116c0-46.32,39.48-84,88-84s88,37.68,88,84C216,145.83,199.19,173.69,172.12,188.69Z"
-                  ></path>
-                </svg>
-              </div>
-
-              <figcaption class="school__label">
-                <span class="school__name">Black</span>
-                <span class="school__token">--color-ambition</span>
-              </figcaption>
-            </figure>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- =========================
-           CHAPTER 6
-           ========================= -->
-      <section class="section section--chapter section--alt" id="local-storage">
-        <div class="container archive">
-          <header class="archive__header flow">
-            <h2 class="archive__title">The Archive Remembers</h2>
-          </header>
+        <!-- STORAGE -->
+        <section class="chapter ch-storage ch-async" id="ch-storage" aria-labelledby="ch-storage-title">
+          <div class="mist-bg" aria-hidden="true">
+            <div
+              class="mist-bg__layer"
+              style="width:600px;height:500px;background:var(--mist-rose);top:0;left:50%;"
+            ></div>
+            <div
+              class="mist-bg__layer"
+              style="width:400px;height:400px;background:var(--mist-gold);bottom:5%;left:10%;"
+            ></div>
+          </div>
 
-          <div class="archive__grid">
-            <!-- LEFT: YOUR DECK -->
-            <section class="archive__col flow">
-              <h3 class="archive__colTitle">Your Deck</h3>
+          <div class="chapter__inner">
+            <span class="chapter-label">Chapter Six</span>
 
-              <div class="deck" aria-label="Your deck">
-                <button class="scroll-card" type="button" data-scroll="Revelation">
-                  <span class="scroll-card__text">
-                    <span class="scroll-card__name">Revelation</span>
-                    <span class="scroll-card__meta">Scroll I</span>
-                  </span>
-                  <span class="scroll-card__icon" aria-hidden="true">
-                    <img src="scrollytelling-scrollMaster-System-Sydney-main/assets/svg/floppy-disk.svg" alt="" />
-                  </span>
-                </button>
+            <div class="ornament" aria-hidden="true">
+              <span class="ornament__line"></span>
+              <span class="ornament__symbol">◈</span>
+              <span class="ornament__line"></span>
+            </div>
 
-                <button class="scroll-card" type="button" data-scroll="Ward">
-                  <span class="scroll-card__text">
-                    <span class="scroll-card__name">Ward</span>
-                    <span class="scroll-card__meta">Scroll II</span>
-                  </span>
-                  <span class="scroll-card__icon" aria-hidden="true">
-                    <img src="scrollytelling-scrollMaster-System-Sydney-main/assets/svg/floppy-disk.svg" alt="" />
-                  </span>
-                </button>
+            <h2 class="chapter__heading" id="ch-storage-title">The Memory Crystal</h2>
 
-                <button class="scroll-card" type="button" data-scroll="Transmute">
-                  <span class="scroll-card__text">
-                    <span class="scroll-card__name">Transmute</span>
-                    <span class="scroll-card__meta">Scroll III</span>
-                  </span>
-                  <span class="scroll-card__icon" aria-hidden="true">
-                    <img src="scrollytelling-scrollMaster-System-Sydney-main/assets/svg/floppy-disk.svg" alt="" />
-                  </span>
-                </button>
+            <div class="two-col">
+              <div class="chapter__body">
+                <p class="drop-cap">
+                  At the very edge of the kingdom, past the event stones and the alchemist's
+                  tower, the apprentice found a small crystal hidden beneath the throne.
+                  Unlike all other enchantments, this one did not fade when the scroll was
+                  closed or the page reloaded. It <em>remembered</em>.
+                </p>
 
-                <button class="scroll-card" type="button" data-scroll="Binding">
-                  <span class="scroll-card__text">
-                    <span class="scroll-card__name">Binding</span>
-                    <span class="scroll-card__meta">Scroll IV</span>
-                  </span>
-                  <span class="scroll-card__icon" aria-hidden="true">
-                    <img src="scrollytelling-scrollMaster-System-Sydney-main/assets/svg/floppy-disk.svg" alt="" />
-                  </span>
-                </button>
-              </div>
+                <p>
+                  This chapter represents <span class="keyword">localStorage</span>. In class,
+                  I learned that it lets a site remember simple information — like a saved
+                  theme preference — even after the page reloads.
+                </p>
 
-              <pre class="archive__code"><code>// Preserve in Archive
-localStorage.setItem(
-  "archive",
-  JSON.stringify(scrolls)
-);</code></pre>
-            </section>
+                <p>
+                  The wizard showed her three incantations: <span class="keyword">setItem</span>
+                  to inscribe, <span class="keyword">getItem</span> to read, and
+                  <span class="keyword">removeItem</span> to erase without a trace.
+                </p>
 
-            <!-- RIGHT: YOUR MEMORY -->
-            <section class="archive__col archive__col--memory">
-              <h3 class="archive__colTitle flow">Your Memory</h3>
+                <p>
+                  “This very page uses the crystal,” the wizard said with a smile,
+                  gesturing to the theme toggle above. “Your choice of dawn or dusk
+                  is kept there, waiting for your return.”
+                </p>
 
-              <div class="memory">
-                <div class="memory__list" id="memoryList" aria-label="Saved scrolls">
-                  <!-- JS will populate -->
+                <div class="spell-scroll" role="region" aria-label="localStorage code example">
+<span class="cm">// Inscribe a memory</span>
+<span class="fn">localStorage</span>.<span class="fn">setItem</span>(<span class="str">'theme'</span>, <span class="str">'dark'</span>);
+
+<span class="cm">// Read the memory</span>
+<span class="kw">const</span> <span class="fn">saved</span> = <span class="fn">localStorage</span>.<span class="fn">getItem</span>(<span class="str">'theme'</span>);
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">saved</span>); <span class="cm">// "dark"</span>
+
+<span class="cm">// Erase the memory</span>
+<span class="fn">localStorage</span>.<span class="fn">removeItem</span>(<span class="str">'theme'</span>);
                 </div>
               </div>
 
-              <!-- footer under memory box -->
-              <div class="archive__footer flow">
-                <button class="archive__clear" id="clearMemory" type="button">
-                  Clear
-                </button>
+              <figure>
+                <img
+                  src="assets/svg/async.svg"
+                  alt="An ornate crystal vessel with golden light flowing through it, representing persistent memory across time and sessions"
+                  class="illustration storage-crystal async-hourglass"
+                  data-speed="0.92"
+                />
+                <figcaption>The crystal that remembers across sessions</figcaption>
+              </figure>
+            </div>
 
-                <p class="archive__body">
-                  At first, every refresh wiped the slate clean. That felt
-                  temporary, like nothing really stuck. Then I learned about
-                  <code>localStorage</code>. Suddenly the system could remember—theme
-                  choices, preferences, state. It felt less like casting a temporary
-                  spell and more like writing something permanent into the archive.
-                  That changed how I saw what a website could be.
-                </p>
-              </div>
-            </section>
+            <blockquote>
+              “The most powerful magic is not the spell that blazes bright —
+              it is the quiet one that waits for you, patient as stone, across days and reloads.”
+            </blockquote>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- =========================
-           CLOSING
-           ========================= -->
-      <section class="section section--chapter section--final" id="closing">
-        <div class="container closing">
-          <div class="closing__fan" aria-hidden="true">
-            <span class="fan-card fan-card--1"></span>
-            <span class="fan-card fan-card--2"></span>
-            <span class="fan-card fan-card--3"></span>
-            <span class="fan-card fan-card--4"></span>
-            <span class="fan-card fan-card--5"></span>
-          </div>
+        <!-- EPILOGUE -->
+        <section
+          class="chapter chapter--centered"
+          id="epilogue"
+          aria-labelledby="epilogue-title"
+          style="background: radial-gradient(ellipse at center, rgba(201,146,47,0.1) 0%, transparent 70%);"
+        >
+          <div class="chapter__inner chapter__inner--center">
+            <span class="chapter-label">Epilogue</span>
 
-          <div class="closing__panel flow">
-            <h2 class="closing__title">Reset the Field</h2>
+            <div class="ornament" aria-hidden="true">
+              <span class="ornament__line"></span>
+              <span class="ornament__symbol">✦</span>
+              <span class="ornament__line"></span>
+            </div>
 
-            <div class="closing__text">
-              <p>At the beginning, everything felt mysterious.</p>
-              <p>Now it feels navigable.</p>
+            <h2 class="chapter__heading" id="epilogue-title">The Journey Continues</h2>
+
+            <div class="chapter__body chapter__body--center">
               <p>
-                Not because the magic disappeared,<br />
-                but because I understand the structure behind it.
+                The apprentice sat at the edge of the enchanted kingdom as the last pages
+                of the tome closed softly around her. She had learned to inspect, to name,
+                to choose, to listen, to systematize, and to remember.
               </p>
-              <p>That’s what Scroll Master became:</p>
-              <p>A way to turn confusion into language.</p>
-              <p>And language into control.</p>
+              <p>
+                The kingdom was still vast, but it no longer felt impossible. Each new concept
+                in JavaScript felt a little less like chaos and a little more like a language
+                she was beginning to understand.
+              </p>
+              <p>
+                She had not found the end of the scroll. She had found the beginning of confidence,
+                and that was enough to keep going.
+              </p>
+            </div>
+
+            <div class="cards-grid cards-grid--epilogue">
+              <div class="concept-card concept-card--center">
+                <span class="concept-card__icon" aria-hidden="true">🪞</span>
+                <h3>DevTools</h3>
+                <p>The mirror that helped me inspect, debug, and understand my code</p>
+              </div>
+
+              <div class="concept-card concept-card--center">
+                <span class="concept-card__icon" aria-hidden="true">⚗</span>
+                <h3>Variables</h3>
+                <p>The enchanted jars of <span class="keyword">let</span> and <span class="keyword">const</span></p>
+              </div>
+
+              <div class="concept-card concept-card--center">
+                <span class="concept-card__icon" aria-hidden="true">⚖</span>
+                <h3>Conditionals</h3>
+                <p>The crossroads where code decides what happens next</p>
+              </div>
+
+              <div class="concept-card concept-card--center">
+                <span class="concept-card__icon" aria-hidden="true">◎</span>
+                <h3>Events</h3>
+                <p>The listening stones that respond to clicks, keys, and actions</p>
+              </div>
+
+              <div class="concept-card concept-card--center">
+                <span class="concept-card__icon" aria-hidden="true">⬡</span>
+                <h3>Design Tokens</h3>
+                <p>The reusable palette of colors, spacing, and CSS variables</p>
+              </div>
+
+              <div class="concept-card concept-card--center">
+                <span class="concept-card__icon" aria-hidden="true">◈</span>
+                <h3>localStorage</h3>
+                <p>The memory crystal that lets the site remember across reloads</p>
+              </div>
+            </div>
+
+            <div class="epilogue__actions">
+              <button type="button" class="btn-restart" data-scroll-to="#hero">Restart Story ↑</button>
+            </div>
+
+            <div class="ornament ornament--end" aria-hidden="true">
+              <span class="ornament__line"></span>
+              <span class="ornament__symbol">✦ &nbsp; fin &nbsp; ✦</span>
+              <span class="ornament__line"></span>
             </div>
           </div>
-        </div>
-      </section>
-      <button id="resetField" class="reset-btn" type="button">
-  Reset the Field ↑
-</button>
-    </main>
+        </section>
 
-    <!-- Scripts -->
-    <!-- GSAP (Core) -->
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-    <!-- ScrollTrigger plugin -->
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-    <script src="main.js?v=20260310"></script>
-  </body>
+      </main>
+
+      <footer class="footer" role="contentinfo">
+        <div class="ornament ornament--footer" aria-hidden="true">
+          <span class="ornament__line"></span>
+          <span class="ornament__symbol">✦</span>
+          <span class="ornament__line"></span>
+        </div>
+
+        <p><em>Lost in the Scroll</em> — A Fairytale of JavaScript</p>
+        <p class="footer__meta">Built with GSAP · ScrollTrigger · ScrollSmoother · HTML · CSS · JavaScript</p>
+        <p class="footer__meta">Project 2 · Web Interaction Design</p>
+      </footer>
+    </div>
+  </div>
+
+  <script src="main.js" defer></script>
+</body>
 </html>

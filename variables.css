@@ -1,133 +1,259 @@
-/* =========================
-   PRIMITIVES (raw values)
-   ========================= */
+/* ═══════════════════════════════════════════════════════
+   VARIABLES / TOKENS.CSS
+   Lost in the Scroll — Design System Tokens
+   Structured for light / dark / system themes
+   ═══════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=IM+Fell+English:ital@0;1&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap');
+
 :root {
-  /* Neutrals */
-  --neutral-100: #f3e9d2;
-  --neutral-200: #e6d8b5;
-  --neutral-300: #f0e4c8;
-  --neutral-400: #d8d1c4;
-  --neutral-500: #9a8f7a;
-  --neutral-600: #8a847a;
-  --neutral-700: #6a5f4b;
-  --neutral-800: #3a3a3a;
-  --neutral-850: #24232a;
-  --neutral-900: #1b1a1f;
-  --neutral-950: #0e0d12;
+  --parchment-50:  #fbf7ef;
+  --parchment-100: #f5efe0;
+  --parchment-200: #e8dcc8;
+  --parchment-300: #d7c7ae;
 
-  /* Gold */
-  --gold-300: #ffd76a;
-  --gold-400: #e6c85c;
-  --gold-500: #c9a85a;
-  --gold-600: #d6b36a;
+  --ink-900: #1a1209;
+  --ink-800: #2a1d12;
+  --ink-700: #3d2e1a;
+  --ink-600: #5a4630;
 
-  /* Accents */
-  --blue-400: #6fb6ff;
-  --blue-500: #4a90e2;
+  --gold-300: #f5e4b8;
+  --gold-400: #e8b84b;
+  --gold-500: #c9922f;
+  --gold-600: #a87821;
 
-  --red-400: #ff6b6b;
-  --red-500: #d94a4a;
+  --rose-300: #e0a7b4;
+  --rose-400: #d4849a;
+  --rose-500: #b85c6e;
+  --rose-600: #944454;
 
-  --green-400: #7ed98a;
-  --green-500: #5faf6a;
+  --forest-300: #76a184;
+  --forest-400: #4a8a5e;
+  --forest-500: #2d5a3d;
+  --forest-600: #21412d;
 
-  --teal-400: #4fd1c5;
-  --teal-500: #7bc6c6;
+  --night-950: #0d0b1a;
+  --night-900: #151126;
+  --night-850: #1e1632;
+  --night-800: #2a2042;
 
-  /* =========================
-     TYPOGRAPHY (theme-agnostic)
-     ========================= */
-  --font-display: "Cinzel", serif;
-  --font-body: "EB Garamond", serif;
-  --font-code: "Courier Prime", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --star-100: #fff7de;
+  --star-200: #f4e7be;
+  --star-300: #e8d5a3;
 
-  /* Sizes */
-  --size-hero: 96px;
-  --size-section: 48px;
-  --size-subsection: 28px;
-  --size-body-lg: 20px;
-  --size-body-md: 18px;
-  --size-body-sm: 16px;
+  --sky-300: #b9cce2;
+  --sky-400: #8ba8c9;
+  --sky-500: #6788af;
 
-  /* Line heights */
-  --line-tight: 1.1;
-  --line-normal: 1.25;
-  --line-body: 1.6;
-  --line-code: 1.45;
+  --font-display: 'IM Fell English', Georgia, serif;
+  --font-body: 'Crimson Pro', Georgia, serif;
+  --font-drop-cap: 'Cormorant Garamond', Georgia, serif;
 
-  /* Spacing (optional but helpful) */
-  --space-sm: 0.75rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2.5rem;
+  --fs-hero: clamp(3rem, 8vw, 7rem);
+  --fs-chapter: clamp(2rem, 5vw, 3.5rem);
+  --fs-subhead: clamp(1.25rem, 2.5vw, 1.75rem);
+  --fs-body: clamp(1.05rem, 1.5vw, 1.25rem);
+  --fs-caption: 0.9rem;
+  --fs-code: 0.95rem;
 
-  /* Radius */
-  --radius-md: 1rem;
-  --radius-lg: 1.5rem;
+  --lh-tight: 1.1;
+  --lh-body: 1.75;
+  --lh-loose: 2;
+
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 4rem;
+  --space-xl: 8rem;
+  --space-xxl: 14rem;
+
+  --radius-sm: 4px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+
+  --ease-fairy: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-dream: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spell: cubic-bezier(0.76, 0, 0.24, 1);
+
+  --dur-fast: 200ms;
+  --dur-med: 500ms;
+  --dur-slow: 900ms;
+
+  --z-base: 0;
+  --z-content: 10;
+  --z-float: 20;
+  --z-nav: 100;
+  --z-modal: 200;
 }
 
-/* =========================
-   LIGHT THEME (semantic roles)
-   ========================= */
-:root {
-  --surface-background: var(--neutral-100);
-  --surface-panel: var(--neutral-200);
-  --surface-elevated: var(--neutral-300);
-  --surface-border: rgba(27, 26, 31, 0.18);
+:root,
+[data-theme="light"] {
+  color-scheme: light;
 
-   /* Ink color used on cream book-page artwork */
-   --surface-book-ink: var(--neutral-900);
+  --bg-primary: var(--parchment-100);
+  --bg-secondary: var(--parchment-200);
+  --bg-tertiary: var(--parchment-50);
+  --bg-card: rgba(245, 239, 224, 0.88);
+  --bg-elevated: rgba(251, 247, 239, 0.92);
 
-  --text-primary: var(--neutral-900);
-  --text-secondary: var(--neutral-700);
-  --text-muted: var(--neutral-500);
-  --text-inverse: var(--neutral-100);
+  --text-primary: var(--ink-900);
+  --text-secondary: var(--ink-700);
+  --text-muted: var(--ink-600);
+  --text-accent: var(--gold-500);
+  --text-rose: var(--rose-500);
+  --text-link: var(--gold-600);
+  --text-on-accent: var(--ink-900);
 
-  --accent-interaction: var(--teal-500);
-  --accent-highlight: var(--gold-500);
+  --border-faint: rgba(201, 146, 47, 0.22);
+  --border-soft: rgba(61, 46, 26, 0.12);
+  --border-accent: var(--gold-500);
+  --border-strong: rgba(61, 46, 26, 0.22);
 
-  --mana-red: var(--red-500);
-  --mana-blue: var(--blue-500);
-  --mana-green: var(--green-500);
-  --mana-white: var(--gold-400);
-  --mana-black: var(--neutral-800);
+  --shadow-soft: 0 4px 32px rgba(26, 18, 9, 0.12);
+  --shadow-card: 0 12px 32px rgba(26, 18, 9, 0.08);
+  --shadow-glow: 0 0 40px rgba(201, 146, 47, 0.18);
+  --overlay-mist: rgba(245, 239, 224, 0.62);
+  --overlay-veil: rgba(255, 247, 222, 0.38);
 
-  /* UI states */
-  --focus-ring: var(--accent-interaction);
-  --link: var(--accent-interaction);
-  --link-hover: var(--gold-500);
+  --focus-ring: 0 0 0 3px rgba(201, 146, 47, 0.28);
+  --selection-bg: rgba(201, 146, 47, 0.28);
+  --selection-text: var(--ink-900);
+
+  --star-glow: rgba(232, 213, 163, 0.75);
+  --mist-gold: rgba(201, 146, 47, 0.12);
+  --mist-rose: rgba(184, 92, 110, 0.1);
+  --mist-forest: rgba(45, 90, 61, 0.12);
+
+  --code-bg: rgba(232, 220, 200, 0.72);
+  --code-text: var(--ink-900);
+  --code-comment: rgba(61, 46, 26, 0.7);
+  --code-keyword: var(--rose-600);
+  --code-string: var(--forest-500);
+  --code-function: var(--gold-600);
+  --code-number: var(--sky-500);
+
+  --scrollbar-track: var(--bg-primary);
+  --scrollbar-thumb: var(--border-faint);
 }
 
-/* =========================
-   DARK THEME (semantic swap)
-   Apply by setting: <html data-theme="dark">
-   ========================= */
 [data-theme="dark"] {
-  --surface-background: var(--neutral-950);
-  --surface-panel: var(--neutral-900);
-  --surface-elevated: var(--neutral-850);
-  --surface-border: rgba(243, 233, 210, 0.18);
+  color-scheme: dark;
 
-   /* Book artwork remains cream in dark mode, so keep dark ink for legibility */
-   --surface-book-ink: var(--neutral-900);
+  --bg-primary: var(--night-950);
+  --bg-secondary: var(--night-850);
+  --bg-tertiary: var(--night-900);
+  --bg-card: rgba(30, 22, 50, 0.9);
+  --bg-elevated: rgba(42, 32, 66, 0.94);
 
-  --text-primary: var(--neutral-100);
-  --text-secondary: rgba(243, 233, 210, 0.82);
-  --text-muted: rgba(243, 233, 210, 0.62);
-  --text-inverse: var(--neutral-950);
+  --text-primary: var(--star-300);
+  --text-secondary: rgba(232, 213, 163, 0.78);
+  --text-muted: rgba(232, 213, 163, 0.58);
+  --text-accent: var(--gold-400);
+  --text-rose: var(--rose-400);
+  --text-link: var(--gold-300);
+  --text-on-accent: var(--night-950);
 
-  /* In dark mode, teal can feel neon—gold is nicer as the main “magic” */
-  --accent-interaction: var(--gold-400);
-  --accent-highlight: var(--gold-300);
+  --border-faint: rgba(232, 184, 75, 0.18);
+  --border-soft: rgba(255, 247, 222, 0.08);
+  --border-accent: var(--gold-400);
+  --border-strong: rgba(232, 213, 163, 0.2);
 
-  /* Mana colors: use lighter variants where you have them */
-  --mana-red: var(--red-400);
-  --mana-blue: var(--blue-400);
-  --mana-green: var(--green-400);
-  --mana-white: var(--gold-300);
-  --mana-black: var(--neutral-400);
+  --shadow-soft: 0 4px 32px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 18px 40px rgba(0, 0, 0, 0.28);
+  --shadow-glow: 0 0 60px rgba(232, 184, 75, 0.14);
+  --overlay-mist: rgba(13, 11, 26, 0.68);
+  --overlay-veil: rgba(232, 213, 163, 0.05);
 
-  --focus-ring: var(--accent-highlight);
-  --link: var(--accent-highlight);
-  --link-hover: var(--teal-400);
+  --focus-ring: 0 0 0 3px rgba(232, 184, 75, 0.26);
+  --selection-bg: rgba(232, 184, 75, 0.24);
+  --selection-text: var(--star-100);
+
+  --star-glow: rgba(255, 247, 222, 0.88);
+  --mist-gold: rgba(232, 184, 75, 0.1);
+  --mist-rose: rgba(212, 132, 154, 0.08);
+  --mist-forest: rgba(118, 161, 132, 0.08);
+
+  --code-bg: rgba(21, 17, 38, 0.9);
+  --code-text: var(--star-300);
+  --code-comment: rgba(232, 213, 163, 0.56);
+  --code-keyword: var(--rose-300);
+  --code-string: var(--forest-300);
+  --code-function: var(--gold-300);
+  --code-number: var(--sky-300);
+
+  --scrollbar-track: var(--bg-primary);
+  --scrollbar-thumb: var(--border-faint);
+}
+
+[data-theme="system"] {
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="system"] {
+    color-scheme: dark;
+
+    --bg-primary: var(--night-950);
+    --bg-secondary: var(--night-850);
+    --bg-tertiary: var(--night-900);
+    --bg-card: rgba(30, 22, 50, 0.9);
+    --bg-elevated: rgba(42, 32, 66, 0.94);
+
+    --text-primary: var(--star-300);
+    --text-secondary: rgba(232, 213, 163, 0.78);
+    --text-muted: rgba(232, 213, 163, 0.58);
+    --text-accent: var(--gold-400);
+    --text-rose: var(--rose-400);
+    --text-link: var(--gold-300);
+    --text-on-accent: var(--night-950);
+
+    --border-faint: rgba(232, 184, 75, 0.18);
+    --border-soft: rgba(255, 247, 222, 0.08);
+    --border-accent: var(--gold-400);
+    --border-strong: rgba(232, 213, 163, 0.2);
+
+    --shadow-soft: 0 4px 32px rgba(0, 0, 0, 0.5);
+    --shadow-card: 0 18px 40px rgba(0, 0, 0, 0.28);
+    --shadow-glow: 0 0 60px rgba(232, 184, 75, 0.14);
+    --overlay-mist: rgba(13, 11, 26, 0.68);
+    --overlay-veil: rgba(232, 213, 163, 0.05);
+
+    --focus-ring: 0 0 0 3px rgba(232, 184, 75, 0.26);
+    --selection-bg: rgba(232, 184, 75, 0.24);
+    --selection-text: var(--star-100);
+
+    --star-glow: rgba(255, 247, 222, 0.88);
+    --mist-gold: rgba(232, 184, 75, 0.1);
+    --mist-rose: rgba(212, 132, 154, 0.08);
+    --mist-forest: rgba(118, 161, 132, 0.08);
+
+    --code-bg: rgba(21, 17, 38, 0.9);
+    --code-text: var(--star-300);
+    --code-comment: rgba(232, 213, 163, 0.56);
+    --code-keyword: var(--rose-300);
+    --code-string: var(--forest-300);
+    --code-function: var(--gold-300);
+    --code-number: var(--sky-300);
+
+    --scrollbar-track: var(--bg-primary);
+    --scrollbar-thumb: var(--border-faint);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0.01ms;
+    --dur-med: 0.01ms;
+    --dur-slow: 0.01ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -1,675 +1,830 @@
-/* =========================
-   Setup
-   ========================= */
+/* ═══════════════════════════════════════════════════════
+   MAIN.JS — Lost in the Scroll
+   V2 cleanup
+   ═══════════════════════════════════════════════════════ */
 
-const hasGSAP = typeof window.gsap !== "undefined";
-const hasScrollTrigger = typeof window.ScrollTrigger !== "undefined";
-const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-if (hasGSAP && hasScrollTrigger) {
-  gsap.registerPlugin(ScrollTrigger);
-  ScrollTrigger.defaults({ markers: false });
+function rnd(max) {
+  return (Math.random() - 0.5) * max * 2;
 }
 
-/* =========================
-   Theme Toggle (localStorage)
-   ========================= */
-
-const root = document.documentElement;
-const themeToggleBtn = document.getElementById("themeToggle");
-
-function syncThemeToggleLabel() {
-  if (!themeToggleBtn) return;
-  const currentTheme = root.getAttribute("data-theme") === "dark" ? "dark" : "light";
-  themeToggleBtn.textContent = currentTheme === "dark" ? "Dusk" : "Dawn";
-}
-
-const savedTheme = localStorage.getItem("theme");
-if (savedTheme) root.setAttribute("data-theme", savedTheme);
-syncThemeToggleLabel();
-
-themeToggleBtn?.addEventListener("click", () => {
-  const currentTheme = root.getAttribute("data-theme");
-  const nextTheme = currentTheme === "dark" ? "light" : "dark";
-  root.setAttribute("data-theme", nextTheme);
-  localStorage.setItem("theme", nextTheme);
-  syncThemeToggleLabel();
-});
-
-/* =========================
-   Hero CTA Smooth Scroll
-   ========================= */
-
-const heroCta = document.querySelector('.hero__cta[href^="#"]');
-
-heroCta?.addEventListener("click", (event) => {
-  const targetSelector = heroCta.getAttribute("href");
-  if (!targetSelector) return;
-
-  const target = document.querySelector(targetSelector);
+function scrollToTarget(target) {
   if (!target) return;
 
-  event.preventDefault();
-  target.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
-});
-
-/* =========================
-   Chapter 4: Tap Card Interaction
-   ========================= */
-
-const tapCardBtn = document.getElementById("tapCard");
-const tapStateEl = document.getElementById("tapState");
-const tapNextStateEl = document.getElementById("tapNextState");
-const tapAfterBlockEl = document.getElementById("tapAfterBlock");
-
-if (tapCardBtn) {
-  tapCardBtn.addEventListener("click", () => {
-    const isTapped = tapCardBtn.classList.toggle("is-tapped");
-    tapCardBtn.setAttribute("aria-pressed", String(isTapped));
-
-    if (tapStateEl) {
-      tapStateEl.textContent = isTapped ? "tapped" : "untapped";
-    }
-
-    if (tapNextStateEl) {
-      tapNextStateEl.textContent = isTapped ? "untapped" : "tapped";
-    }
-
-    if (tapAfterBlockEl) {
-      tapAfterBlockEl.hidden = !isTapped;
-    }
-  });
+  if (window.scrollToSection) {
+    window.scrollToSection(target);
+  } else {
+    target.scrollIntoView({
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      block: 'start'
+    });
+  }
 }
 
-/* =========================
-   Chapter 6: Archive Memory
-   ========================= */
-
-const STORAGE_KEY = "archiveScrolls";
-const memoryList = document.getElementById("memoryList");
-const clearMemoryBtn = document.getElementById("clearMemory");
-const deckButtons = document.querySelectorAll(".scroll-card");
-
-function loadMemory() {
-  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-  return Array.isArray(saved) ? saved : [];
+function spawnSparkle(x, y, size = 3 + Math.random() * 4.5, variant = '') {
+  const sparkle = document.createElement('div');
+  sparkle.className = `cursor-sparkle ${variant}`.trim();
+  sparkle.style.left = `${x}px`;
+  sparkle.style.top = `${y}px`;
+  sparkle.style.width = `${size}px`;
+  sparkle.style.height = `${size}px`;
+  document.body.appendChild(sparkle);
+  return sparkle;
 }
 
-function saveMemory(items) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+function burstSparkles(x, y, options = {}) {
+  const {
+    count = 14,
+    spread = 72,
+    duration = 0.8,
+    variant = 'cursor-sparkle--warm'
+  } = options;
+
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 10 + Math.random() * spread;
+    const sparkle = spawnSparkle(x, y, 2.5 + Math.random() * 5, variant);
+
+    gsap.to(sparkle, {
+      x: Math.cos(angle) * distance,
+      y: Math.sin(angle) * distance - (8 + Math.random() * 16),
+      opacity: 0,
+      scale: 0,
+      duration: duration + Math.random() * 0.35,
+      ease: 'power2.out',
+      onComplete: () => sparkle.remove()
+    });
+  }
 }
 
-function renderMemory() {
-  if (!memoryList) return;
+let restartSpellActive = false;
 
-  const items = loadMemory();
-  memoryList.innerHTML = "";
-  memoryList.classList.remove("is-empty");
+function playRestartStoryAnimation(btn, target) {
+  if (!btn || !target) return;
 
-  if (items.length === 0) {
-    memoryList.classList.add("is-empty");
-    memoryList.innerHTML = `<p class="memory__empty">Nothing saved yet.</p>`;
+  if (restartSpellActive || prefersReducedMotion || typeof gsap === 'undefined') {
+    scrollToTarget(target);
     return;
   }
 
-  items.forEach((name) => {
-    const el = document.createElement("div");
-    el.className = "memory-item";
-    el.innerHTML = `
-      <div class="memory-item__name">${name}</div>
-      <div class="memory-item__meta">Saved in archive</div>
-    `;
-    memoryList.appendChild(el);
-  });
-}
+  restartSpellActive = true;
+  btn.classList.add('is-restarting');
+  btn.setAttribute('aria-disabled', 'true');
 
-function animateScrollTransfer(sourceBtn, scrollName) {
-  if (!hasGSAP || prefersReducedMotion || !memoryList) return;
+  const buttonRect = btn.getBoundingClientRect();
+  const origin = {
+    x: buttonRect.left + buttonRect.width / 2,
+    y: buttonRect.top + buttonRect.height / 2
+  };
 
-  const sourceRect = sourceBtn.getBoundingClientRect();
-  const targetRect = memoryList.getBoundingClientRect();
-  if (!sourceRect.width || !targetRect.width) return;
+  const logo = document.querySelector('.nav__logo');
+  const logoRect = logo ? logo.getBoundingClientRect() : null;
+  const destination = logoRect
+    ? {
+      x: logoRect.left + logoRect.width / 2,
+      y: logoRect.top + logoRect.height / 2
+    }
+    : {
+      x: window.innerWidth * 0.5,
+      y: 76
+    };
 
-  const ghost = document.createElement("div");
-  ghost.textContent = scrollName;
-  ghost.style.position = "fixed";
-  ghost.style.left = `${sourceRect.left}px`;
-  ghost.style.top = `${sourceRect.top}px`;
-  ghost.style.width = `${sourceRect.width}px`;
-  ghost.style.padding = "0.8rem 1rem";
-  ghost.style.borderRadius = "18px";
-  ghost.style.border = "2px solid var(--accent-highlight)";
-  ghost.style.background = "var(--surface-elevated)";
-  ghost.style.color = "var(--text-primary)";
-  ghost.style.fontFamily = "var(--font-display)";
-  ghost.style.fontSize = "22px";
-  ghost.style.lineHeight = "1.05";
-  ghost.style.textAlign = "left";
-  ghost.style.pointerEvents = "none";
-  ghost.style.zIndex = "2000";
+  burstSparkles(origin.x, origin.y, { count: 20, spread: 90, duration: 0.9 });
 
-  document.body.appendChild(ghost);
+  const comet = spawnSparkle(origin.x, origin.y, 14, 'restart-comet');
+  const trailPoint = { x: origin.x, y: origin.y };
 
-  const destinationX = targetRect.left + (targetRect.width - sourceRect.width) / 2;
-  const destinationY = targetRect.top + 16;
-
-  gsap.to(ghost, {
-    x: destinationX - sourceRect.left,
-    y: destinationY - sourceRect.top,
-    scale: 0.86,
-    opacity: 0.12,
-    duration: 0.55,
-    ease: "power2.inOut",
-    onComplete: () => ghost.remove()
-  });
-}
-
-function animateMemoryItemIn(scrollName) {
-  if (!hasGSAP || prefersReducedMotion || !memoryList) return;
-
-  const item = Array.from(memoryList.querySelectorAll(".memory-item")).find((el) => {
-    const name = el.querySelector(".memory-item__name")?.textContent?.trim();
-    return name === scrollName;
+  gsap.fromTo(btn, {
+    scale: 1
+  }, {
+    scale: 0.92,
+    duration: 0.14,
+    yoyo: true,
+    repeat: 1,
+    ease: 'power1.inOut'
   });
 
-  if (!item) return;
+  gsap.to(trailPoint, {
+    x: destination.x,
+    y: destination.y,
+    duration: 1.05,
+    ease: 'power2.inOut',
+    onUpdate: () => {
+      comet.style.left = `${trailPoint.x}px`;
+      comet.style.top = `${trailPoint.y}px`;
 
-  gsap.fromTo(
-    item,
-    { opacity: 0.35, y: 10, scale: 0.97 },
-    { opacity: 1, y: 0, scale: 1, duration: 0.42, ease: "power2.out" }
-  );
-}
-
-deckButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    const name = button.getAttribute("data-scroll");
-    if (!name) return;
-
-    const items = loadMemory();
-    const isNewItem = !items.includes(name);
-
-    if (isNewItem) items.push(name);
-    saveMemory(items);
-    renderMemory();
-
-    if (!isNewItem) return;
-
-    animateScrollTransfer(button, name);
-
-    if (hasGSAP && !prefersReducedMotion) {
-      gsap.delayedCall(0.18, () => animateMemoryItemIn(name));
-    } else {
-      animateMemoryItemIn(name);
-    }
-  });
-});
-
-clearMemoryBtn?.addEventListener("click", () => {
-  localStorage.removeItem(STORAGE_KEY);
-  renderMemory();
-});
-
-renderMemory();
-
-/* =========================
-   Global Scroll Animations
-   ========================= */
-
-if (hasGSAP) {
-  gsap.from(".hero__content", {
-    opacity: 0,
-    y: 16,
-    duration: 1,
-    ease: "power2.out"
-  });
-}
-
-if (hasGSAP) {
-  const titleSelectors = [
-    ".headline",
-    ".chapter-title",
-    ".grimoire__title",
-    ".fork__title",
-    ".energy__title",
-    ".schools__title",
-    ".archive__title",
-    ".closing__title"
-  ].join(",");
-
-  gsap.utils.toArray(titleSelectors).forEach((el) => {
-    if (hasScrollTrigger) {
-      gsap.from(el, {
-        scrollTrigger: {
-          trigger: el,
-          start: "top 80%",
-          toggleActions: "play none none reverse"
-        },
-        opacity: 0,
-        y: 18,
-        duration: 0.7,
-        ease: "power2.out"
-      });
-    } else {
-      gsap.from(el, {
-        opacity: 0,
-        y: 18,
-        duration: 0.7,
-        ease: "power2.out"
-      });
-    }
-  });
-}
-
-if (hasGSAP) {
-  const energyPanel = document.querySelector(".energy__panel");
-
-  if (energyPanel && hasScrollTrigger) {
-    gsap.from(energyPanel, {
-      scrollTrigger: {
-        trigger: energyPanel,
-        start: "top 75%"
-      },
-      opacity: 0,
-      y: 24,
-      duration: 0.8,
-      ease: "power2.out"
-    });
-  } else if (energyPanel) {
-    gsap.from(energyPanel, {
-      opacity: 0,
-      y: 24,
-      duration: 0.8,
-      ease: "power2.out"
-    });
-  }
-}
-
-if (hasGSAP && hasScrollTrigger && !prefersReducedMotion) {
-  const heroSection = document.querySelector(".section--hero");
-  const heroScrollFade = document.querySelector(".hero__scroll-fade");
-
-  if (heroSection && heroScrollFade) {
-    gsap.to(heroSection, {
-      backgroundPosition: "50% 65%",
-      ease: "none",
-      scrollTrigger: {
-        trigger: heroSection,
-        start: "top top",
-        end: "bottom+=45% top",
-        scrub: true
-      }
-    });
-
-    gsap.to(heroScrollFade, {
-      scaleY: 1,
-      ease: "none",
-      scrollTrigger: {
-        trigger: heroSection,
-        start: "top top",
-        end: "bottom+=45% top",
-        scrub: true,
-        onUpdate: (self) => {
-          heroScrollFade.style.transformOrigin =
-            self.direction === 1 ? "bottom center" : "top center";
-        }
-      }
-    });
-  }
-}
-
-/* =========================
-   Chapter 5: School Animations
-   ========================= */
-
-const schools = hasGSAP ? gsap.utils.toArray(".schools .school") : [];
-
-function makeSchoolAnimations() {
-  if (!hasGSAP) return;
-
-  if (!prefersReducedMotion) {
-    if (hasScrollTrigger) {
-      gsap.from(".schools .school__glyph", {
-        opacity: 0,
-        y: 18,
-        scale: 0.9,
-        duration: 0.8,
-        ease: "power2.out",
-        stagger: 0.1,
-        scrollTrigger: {
-          trigger: ".schools",
-          start: "top 80%",
-          toggleActions: "play none none reverse"
-        }
-      });
-    } else {
-      gsap.from(".schools .school__glyph", {
-        opacity: 0,
-        y: 18,
-        scale: 0.9,
-        duration: 0.8,
-        ease: "power2.out",
-        stagger: 0.1
-      });
-    }
-  } else {
-    gsap.set(".schools .school__glyph", { opacity: 1 });
-  }
-
-  schools.forEach((card) => {
-    const icon = card.querySelector(".school__glyph");
-    if (!icon) return;
-
-    card.tabIndex = 0;
-    gsap.set(icon, { transformOrigin: "50% 50%" });
-
-    let idleTimeline;
-
-    const pauseIdle = () => idleTimeline && idleTimeline.pause();
-    const resumeIdle = () => idleTimeline && idleTimeline.resume();
-
-    if (card.classList.contains("school--white") && !prefersReducedMotion) {
-      idleTimeline = gsap.timeline({ repeat: -1, yoyo: true }).to(icon, {
-        scale: 1.05,
-        duration: 1.6,
-        ease: "sine.inOut"
-      });
-    }
-
-    if (card.classList.contains("school--green") && !prefersReducedMotion) {
-      idleTimeline = gsap.timeline({ repeat: -1, yoyo: true }).to(icon, {
-        y: -7,
-        scale: 1.03,
-        duration: 2.1,
-        ease: "sine.inOut"
-      });
-    }
-
-    if (card.classList.contains("school--blue") && !prefersReducedMotion) {
-      idleTimeline = gsap.timeline({ repeat: -1, yoyo: true }).to(icon, {
-        rotation: 8,
-        duration: 2.2,
-        ease: "sine.inOut"
-      });
-    }
-
-    if (card.classList.contains("school--red") && !prefersReducedMotion) {
-      idleTimeline = gsap.timeline({ repeat: -1, repeatDelay: 1.8 });
-      idleTimeline
-        .to(icon, { scale: 1.08, duration: 0.18, ease: "power2.out" })
-        .to(icon, { scale: 0.98, duration: 0.12, ease: "power2.out" })
-        .to(icon, { scale: 1.02, duration: 0.18, ease: "power1.out" })
-        .to(icon, { scale: 1, duration: 0.25, ease: "power2.out" });
-    }
-
-    if (card.classList.contains("school--black") && !prefersReducedMotion) {
-      idleTimeline = gsap.timeline({ repeat: -1, yoyo: true }).to(icon, {
-        y: 4,
-        scale: 1.03,
-        duration: 2.4,
-        ease: "sine.inOut"
-      });
-    }
-
-    const onEnter = () => {
-      pauseIdle();
-
-      gsap.to(icon, {
-        scale: prefersReducedMotion ? 1.06 : 1.14,
-        y: prefersReducedMotion ? -2 : -6,
-        duration: prefersReducedMotion ? 0.18 : 0.25,
-        ease: "power2.out",
-        overwrite: "auto"
-      });
-
-      if (card.classList.contains("school--white") && !prefersReducedMotion) {
-        gsap.to(icon, { rotation: 12, duration: 0.25, ease: "power2.out", overwrite: "auto" });
-      }
-
-      if (card.classList.contains("school--green") && !prefersReducedMotion) {
-        gsap.to(icon, { rotation: -6, duration: 0.25, ease: "power2.out", overwrite: "auto" });
-      }
-
-      if (card.classList.contains("school--blue") && !prefersReducedMotion) {
-        gsap.to(icon, { rotation: 10, duration: 0.25, ease: "power2.out", overwrite: "auto" });
-      }
-
-      if (card.classList.contains("school--red") && !prefersReducedMotion) {
-        gsap.fromTo(
-          icon,
-          { rotation: -6 },
-          { rotation: 6, duration: 0.06, repeat: 7, yoyo: true, ease: "power1.inOut", overwrite: "auto" }
+      if (Math.random() < 0.75) {
+        const tail = spawnSparkle(
+          trailPoint.x + rnd(8),
+          trailPoint.y + rnd(8),
+          2 + Math.random() * 3,
+          'cursor-sparkle--warm'
         );
+
+        gsap.to(tail, {
+          x: rnd(20),
+          y: rnd(20),
+          opacity: 0,
+          scale: 0,
+          duration: 0.38 + Math.random() * 0.24,
+          ease: 'power2.out',
+          onComplete: () => tail.remove()
+        });
       }
+    },
+    onComplete: () => {
+      burstSparkles(destination.x, destination.y, { count: 12, spread: 54, duration: 0.72 });
+      comet.remove();
+    }
+  });
 
-      if (card.classList.contains("school--black") && !prefersReducedMotion) {
-        gsap.to(icon, { rotation: -10, duration: 0.25, ease: "power2.out", overwrite: "auto" });
-      }
-    };
+  gsap.delayedCall(0.14, () => {
+    scrollToTarget(target);
+  });
 
-    const onLeave = () => {
-      gsap.to(icon, {
-        scale: 1,
-        y: 0,
-        rotation: 0,
-        duration: prefersReducedMotion ? 0.2 : 0.35,
-        ease: "power2.out",
-        overwrite: "auto"
-      });
-      resumeIdle();
-    };
-
-    card.addEventListener("mouseenter", onEnter);
-    card.addEventListener("mouseleave", onLeave);
-    card.addEventListener("focus", onEnter);
-    card.addEventListener("blur", onLeave);
+  gsap.delayedCall(1.36, () => {
+    restartSpellActive = false;
+    btn.classList.remove('is-restarting');
+    btn.removeAttribute('aria-disabled');
   });
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", makeSchoolAnimations);
-} else {
-  makeSchoolAnimations();
-}
+function createCodeTypewriter(block) {
+  const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+  const textNodes = [];
 
-/* =========================
-   Chapter 3: Forked Path Selection
-   ========================= */
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    if (!node.nodeValue || !node.nodeValue.length) continue;
 
-const PATH_STORAGE_KEY = "selectedPath";
-const choosePathBtn = document.getElementById("choosePathBtn");
-const wizardCard = document.querySelector(".fork-card--wizard");
-const sorcererCard = document.querySelector(".fork-card--sorcerer");
-
-function setSelectedPath(card, { animate = true } = {}) {
-  if (!wizardCard || !sorcererCard) return;
-
-  wizardCard.classList.remove("is-selected");
-  sorcererCard.classList.remove("is-selected");
-  card.classList.add("is-selected");
-
-  const chosen = card.classList.contains("fork-card--wizard") ? "wizard" : "sorcerer";
-  localStorage.setItem(PATH_STORAGE_KEY, chosen);
-
-  if (choosePathBtn) {
-    choosePathBtn.textContent = chosen === "wizard" ? "Chosen: Wizard" : "Chosen: Sorcerer";
-  }
-
-  if (animate && hasGSAP) {
-    gsap.fromTo(card, { scale: 0.98 }, { scale: 1, duration: 0.25, ease: "power2.out" });
-  }
-}
-
-if (wizardCard && sorcererCard) {
-  [wizardCard, sorcererCard].forEach((card) => {
-    card.tabIndex = 0;
-
-    card.addEventListener("click", () => setSelectedPath(card));
-    card.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        setSelectedPath(card);
-      }
+    textNodes.push({
+      node,
+      fullText: node.nodeValue
     });
-  });
-}
-
-choosePathBtn?.addEventListener("click", () => {
-  if (!wizardCard || !sorcererCard) return;
-
-  const wizardSelected = wizardCard.classList.contains("is-selected");
-  const sorcererSelected = sorcererCard.classList.contains("is-selected");
-
-  if (!wizardSelected && !sorcererSelected) {
-    setSelectedPath(wizardCard);
-  } else if (wizardSelected) {
-    setSelectedPath(sorcererCard);
-  } else {
-    setSelectedPath(wizardCard);
   }
-});
 
-const savedPath = localStorage.getItem(PATH_STORAGE_KEY);
-if (savedPath === "wizard" && wizardCard) setSelectedPath(wizardCard, { animate: false });
-if (savedPath === "sorcerer" && sorcererCard) setSelectedPath(sorcererCard, { animate: false });
+  if (!textNodes.length) return null;
 
-/* =========================
-   Flow Fade (Scroll-linked)
-   ========================= */
+  const totalChars = textNodes.reduce((sum, part) => sum + part.fullText.length, 0);
+  const progress = { chars: 0 };
+  const originalMinHeight = block.style.minHeight;
+  const lockedHeight = block.offsetHeight;
+  let hasPlayed = false;
 
-if (hasGSAP && hasScrollTrigger) {
-  gsap.utils.toArray(".flow").forEach((el) => {
-    gsap.set(el, { opacity: 0, y: 18 });
+  block.style.minHeight = `${lockedHeight}px`;
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: el,
-        start: "top 90%",
-        end: "bottom 10%",
-        scrub: true
+  const render = () => {
+    let remaining = progress.chars;
+
+    textNodes.forEach((part) => {
+      if (remaining <= 0) {
+        part.node.nodeValue = '';
+        return;
       }
+
+      if (remaining >= part.fullText.length) {
+        part.node.nodeValue = part.fullText;
+        remaining -= part.fullText.length;
+        return;
+      }
+
+      part.node.nodeValue = part.fullText.slice(0, remaining);
+      remaining = 0;
     });
+  };
 
-    tl.to(el, { opacity: 1, y: 0, ease: "sine.out", duration: 0.45 })
-      .to(el, { opacity: 1, y: 0, duration: 0.3 })
-      .to(el, { opacity: 0, y: -12, ease: "sine.in", duration: 0.45 });
+  render();
+
+  const tween = gsap.to(progress, {
+    chars: totalChars,
+    duration: Math.max(1.2, Math.min(5, totalChars / 28)),
+    ease: 'none',
+    snap: { chars: 1 },
+    paused: true,
+    onStart: () => {
+      block.classList.add('is-typing');
+    },
+    onUpdate: render,
+    onComplete: () => {
+      block.classList.remove('is-typing');
+      block.style.minHeight = originalMinHeight;
+    }
   });
+
+  return {
+    play() {
+      if (hasPlayed) return;
+      hasPlayed = true;
+      tween.play(0);
+    }
+  };
 }
 
-/* =========================
-   Reset Button Behavior
-   ========================= */
+/* THEME */
+const ThemeManager = {
+  KEY: 'tale-theme',
 
-const resetFieldBtn = document.getElementById("resetField");
-if (resetFieldBtn) resetFieldBtn.hidden = true;
+  init() {
+    const saved = localStorage.getItem(this.KEY);
 
-window.addEventListener("scroll", () => {
-  if (!resetFieldBtn) return;
-  resetFieldBtn.hidden = window.scrollY < 400;
-});
-
-function resetWizard() {
-  if (!hasGSAP) {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    return;
-  }
-
-  const state = { y: window.scrollY };
-  gsap.timeline({ overwrite: true }).to(state, {
-    y: 0,
-    duration: 1.35,
-    ease: "sine.inOut",
-    onUpdate: () => window.scrollTo(0, state.y)
-  });
-}
-
-function resetSorcerer() {
-  if (!hasGSAP) {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    return;
-  }
-
-  const state = { y: window.scrollY };
-
-  gsap.timeline({ overwrite: true })
-    .to(state, {
-      y: 120,
-      duration: 0.5,
-      ease: "power4.out",
-      onUpdate: () => window.scrollTo(0, state.y)
-    })
-    .to(state, {
-      y: 0,
-      duration: 0.35,
-      ease: "back.out(2.4)",
-      onUpdate: () => window.scrollTo(0, state.y)
-    });
-}
-
-resetFieldBtn?.addEventListener("click", () => {
-  const chosen = localStorage.getItem(PATH_STORAGE_KEY);
-  if (chosen === "sorcerer") resetSorcerer();
-  else resetWizard();
-});
-
-/* =========================
-   Code Typing Animations
-   ========================= */
-
-if (hasGSAP) {
-  const typingTargets = gsap.utils.toArray("pre code, p code, li code, .inline-link");
-
-  typingTargets.forEach((el) => {
-    if (el.children.length > 0) return;
-
-    const originalText = el.textContent;
-    if (!originalText || !originalText.trim()) return;
-
-    if (prefersReducedMotion) {
-      el.textContent = originalText;
-      return;
+    if (saved) {
+      this.apply(saved);
+    } else {
+      const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      this.apply(sysDark ? 'dark' : 'light');
     }
 
-    el.textContent = "";
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (!localStorage.getItem(this.KEY)) {
+        this.apply(e.matches ? 'dark' : 'light');
+      }
+    });
+  },
 
-    const typingState = { count: 0 };
-    const typingDuration = Math.min(2.4, Math.max(0.8, originalText.length * 0.03));
+  apply(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
 
-    const playTyping = () => {
-      gsap.to(typingState, {
-        count: originalText.length,
-        duration: typingDuration,
-        ease: "none",
-        onUpdate: () => {
-          el.textContent = originalText.slice(0, Math.floor(typingState.count));
+    const btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+
+    if (theme === 'dark') {
+      btn.textContent = '☀ Dawn';
+      btn.setAttribute('aria-label', 'Switch to light mode');
+    } else {
+      btn.textContent = '☽ Dusk';
+      btn.setAttribute('aria-label', 'Switch to dark mode');
+    }
+  },
+
+  toggle() {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    localStorage.setItem(this.KEY, next);
+    this.apply(next);
+  }
+};
+
+/* STARS */
+const StarsCanvas = {
+  init() {
+    const canvas = document.getElementById('stars-canvas');
+    if (!canvas || prefersReducedMotion) return;
+
+    const ctx = canvas.getContext('2d');
+    const stars = [];
+    const count = 120;
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5 + 0.3,
+        alpha: Math.random() * 0.6 + 0.2,
+        speed: Math.random() * 0.003 + 0.001,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+
+    const draw = (t = 0) => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      stars.forEach((s) => {
+        const a = s.alpha * (0.6 + 0.4 * Math.sin(t * s.speed + s.phase));
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(232, 213, 163, ${a})`;
+        ctx.fill();
+      });
+
+      requestAnimationFrame(draw);
+    };
+
+    requestAnimationFrame(draw);
+  }
+};
+
+/* FIREFLIES */
+const Fireflies = {
+  init() {
+    if (prefersReducedMotion) return;
+
+    const hero = document.querySelector('.hero');
+    if (!hero) return;
+
+    for (let i = 0; i < 18; i++) {
+      const ff = document.createElement('div');
+      ff.className = 'firefly';
+      ff.style.cssText = `
+        left: ${Math.random() * 100}%;
+        top: ${20 + Math.random() * 70}%;
+        animation: firefly-drift ${5 + Math.random() * 8}s ${Math.random() * 5}s ease-in-out infinite alternate;
+      `;
+      hero.appendChild(ff);
+    }
+
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes firefly-drift {
+        from { transform: translate(0, 0) scale(1); opacity: 0.7; }
+        25%  { transform: translate(${rnd(30)}px, ${rnd(20)}px) scale(0.8); opacity: 0.3; }
+        50%  { transform: translate(${rnd(50)}px, ${rnd(30)}px) scale(1.2); opacity: 0.9; }
+        75%  { transform: translate(${rnd(20)}px, ${rnd(40)}px) scale(0.7); opacity: 0.4; }
+        to   { transform: translate(${rnd(40)}px, ${rnd(25)}px) scale(1); opacity: 0.6; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+};
+
+/* CURSOR SPARKLES */
+const CursorSparkle = {
+  init() {
+    if (prefersReducedMotion || typeof gsap === 'undefined') return;
+
+    document.addEventListener('mousemove', (e) => {
+      if (Math.random() > 0.15) return;
+
+      const s = document.createElement('div');
+      s.className = 'cursor-sparkle';
+      s.style.left = `${e.clientX}px`;
+      s.style.top = `${e.clientY}px`;
+      s.style.width = `${3 + Math.random() * 5}px`;
+      s.style.height = s.style.width;
+      document.body.appendChild(s);
+
+      gsap.to(s, {
+        y: -30 - Math.random() * 30,
+        x: rnd(20),
+        opacity: 0,
+        scale: 0,
+        duration: 0.8 + Math.random() * 0.5,
+        ease: 'power2.out',
+        onComplete: () => s.remove()
+      });
+    });
+  }
+};
+
+const Nav = {
+  init() {
+    const nav = document.querySelector('.nav');
+    const progress = document.querySelector('.reading-progress');
+
+    if (typeof ScrollTrigger === 'undefined') return;
+
+    ScrollTrigger.create({
+      start: 0,
+      end: 'max',
+      onUpdate: (self) => {
+        if (nav) {
+          nav.classList.toggle('scrolled', self.scroll() > 60);
+        }
+
+        if (progress) {
+          const pct = self.progress * 100;
+          progress.style.width = `${pct}%`;
+          progress.setAttribute('aria-valuenow', Math.round(pct));
+        }
+      }
+    });
+  }
+};
+
+const StoryNav = {
+  init() {
+    const links = document.querySelectorAll('.story-nav__link');
+    if (!links.length || typeof ScrollTrigger === 'undefined') return;
+
+    links.forEach((link) => {
+      const href = link.getAttribute('href');
+      const section = href ? document.querySelector(href) : null;
+      if (!section) return;
+
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top center',
+        end: 'bottom center',
+        onToggle: (self) => {
+          if (self.isActive) {
+            links.forEach((l) => l.classList.remove('is-active'));
+            link.classList.add('is-active');
+          }
         }
       });
-    };
 
-    if (hasScrollTrigger) {
-      ScrollTrigger.create({
-        trigger: el,
-        start: "top 85%",
-        once: true,
-        onEnter: playTyping
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        if (window.scrollToSection) {
+          window.scrollToSection(section);
+        } else {
+          section.scrollIntoView({
+            behavior: prefersReducedMotion ? 'auto' : 'smooth',
+            block: 'start'
+          });
+        }
       });
+    });
+  }
+};
+
+function initGSAP() {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+    console.warn('GSAP or ScrollTrigger not loaded');
+    return;
+  }
+
+  gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+
+  let smoother = null;
+
+  if (!prefersReducedMotion && typeof ScrollSmoother !== 'undefined') {
+    smoother = ScrollSmoother.create({
+      wrapper: '#smooth-wrapper',
+      content: '#smooth-content',
+      smooth: 1.2,
+      effects: true,
+      smoothTouch: 0.1
+    });
+  }
+
+  window.scrollToSection = (target) => {
+    if (!target) return;
+
+    if (smoother && !prefersReducedMotion) {
+      smoother.scrollTo(target, true, 'top top');
     } else {
-      playTyping();
+      target.scrollIntoView({
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'start'
+      });
     }
-  });
-}
-if (hasGSAP && hasScrollTrigger && !prefersReducedMotion) {
-  gsap.utils.toArray(".section--chapter").forEach((section) => {
-    gsap.from(section, {
+  };
+
+  /* HERO */
+  const heroTl = gsap.timeline({ delay: 0.2 });
+
+  heroTl
+    .from('.hero__eyebrow', {
+      opacity: 0,
+      y: 20,
+      duration: 0.8,
+      ease: 'power2.out'
+    })
+    .from('.hero__title', {
+      opacity: 0,
+      y: 60,
+      duration: 1.2,
+      ease: 'expo.out'
+    }, '-=0.4')
+    .from('.hero__subtitle', {
+      opacity: 0,
+      y: 30,
+      duration: 0.9,
+      ease: 'power3.out'
+    }, '-=0.6')
+    .from('.hero__desc', {
       opacity: 0,
       y: 20,
       duration: 0.7,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: section,
-        start: "top 80%",
-        toggleActions: "play none none reverse"
+      ease: 'power2.out'
+    }, '-=0.4')
+    .from('.hero__scroll-cue', {
+      opacity: 0,
+      y: -15,
+      duration: 0.6,
+      ease: 'power2.out'
+    }, '-=0.2')
+    .from('.hero__illustration', {
+      opacity: 0,
+      scale: 0.8,
+      rotation: -5,
+      duration: 1.2,
+      ease: 'elastic.out(1, 0.6)'
+    }, '-=1.2');
+
+  /* REVEALS */
+  const codeTypewriters = new Map();
+
+  if (!prefersReducedMotion) {
+    gsap.utils.toArray('.spell-scroll:not(.showpiece__code)').forEach((block) => {
+      const typewriter = createCodeTypewriter(block);
+      if (typewriter) {
+        codeTypewriters.set(block, typewriter);
       }
     });
+  }
+
+  gsap.utils.toArray('.chapter-label').forEach((el) => {
+    gsap.from(el, {
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 85%'
+      },
+      opacity: 0,
+      x: -30,
+      duration: 0.6,
+      ease: 'power2.out'
+    });
   });
+
+  gsap.utils.toArray('.chapter__heading').forEach((el) => {
+    gsap.from(el, {
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 82%'
+      },
+      opacity: 0,
+      y: 50,
+      duration: 1,
+      ease: 'expo.out'
+    });
+  });
+
+  gsap.utils.toArray('.chapter__body p').forEach((el) => {
+    gsap.from(el, {
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 88%'
+      },
+      opacity: 0,
+      y: 20,
+      duration: 0.8,
+      ease: 'power2.out'
+    });
+  });
+
+  gsap.utils.toArray('.ornament').forEach((el) => {
+    gsap.from(el, {
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 85%'
+      },
+      scaleX: 0,
+      opacity: 0,
+      transformOrigin: 'center',
+      duration: 0.9,
+      ease: 'expo.out'
+    });
+  });
+
+  gsap.utils.toArray('.cards-grid').forEach((grid) => {
+    const cards = grid.querySelectorAll('.concept-card');
+
+    gsap.from(cards, {
+      scrollTrigger: {
+        trigger: grid,
+        start: 'top 82%'
+      },
+      opacity: 0,
+      y: 60,
+      scale: 0.94,
+      stagger: 0.12,
+      duration: 0.8,
+      ease: 'back.out(1.4)'
+    });
+  });
+
+  gsap.utils.toArray('.spell-scroll:not(.showpiece__code)').forEach((el) => {
+    gsap.from(el, {
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 85%',
+        once: true,
+        onEnter: () => {
+          const typewriter = codeTypewriters.get(el);
+          if (typewriter) {
+            typewriter.play();
+          }
+        }
+      },
+      opacity: 0,
+      x: 30,
+      duration: 0.8,
+      ease: 'power3.out'
+    });
+  });
+
+  gsap.utils.toArray('.illustration').forEach((el) => {
+    gsap.from(el, {
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 85%'
+      },
+      opacity: 0,
+      scale: 0.75,
+      rotation: -8,
+      duration: 1.1,
+      ease: 'elastic.out(1, 0.7)'
+    });
+  });
+
+  gsap.utils.toArray('blockquote').forEach((el) => {
+    gsap.from(el, {
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 88%'
+      },
+      opacity: 0,
+      x: -40,
+      duration: 0.9,
+      ease: 'power3.out'
+    });
+  });
+
+  /* SCRUBS */
+  gsap.to('.hero__illustration', {
+    scrollTrigger: {
+      trigger: '.hero',
+      start: 'top top',
+      end: 'bottom top',
+      scrub: 1.5
+    },
+    y: -80,
+    rotation: 8,
+    opacity: 0.3,
+    scale: 0.9,
+    ease: 'none'
+  });
+
+  gsap.utils.toArray('.chapter').forEach((chapter) => {
+    const bg = chapter.querySelector('.mist-bg');
+    if (!bg) return;
+
+    gsap.to(bg, {
+      scrollTrigger: {
+        trigger: chapter,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 2
+      },
+      y: -60,
+      ease: 'none'
+    });
+  });
+
+  gsap.to('.ch-variables .illustration', {
+    scrollTrigger: {
+      trigger: '.ch-variables',
+      start: 'top center',
+      end: 'bottom top',
+      scrub: 1
+    },
+    y: -40,
+    ease: 'none'
+  });
+
+  gsap.to('.ch-loops .illustration', {
+    scrollTrigger: {
+      trigger: '.ch-loops',
+      start: 'top center',
+      end: 'bottom top',
+      scrub: 2
+    },
+    rotation: 180,
+    ease: 'none'
+  });
+
+  gsap.to('.ch-devtools .illustration', {
+    scrollTrigger: {
+      trigger: '.ch-devtools',
+      start: 'top 70%',
+      toggleActions: 'play none none reverse'
+    },
+    y: -16,
+    rotation: 5,
+    yoyo: true,
+    repeat: -1,
+    duration: 2.2,
+    ease: 'sine.inOut'
+  });
+
+  gsap.to('.ch-tokens .illustration', {
+    scrollTrigger: {
+      trigger: '.ch-tokens',
+      start: 'top 70%',
+      toggleActions: 'play none none reverse'
+    },
+    scale: 1.04,
+    rotation: 6,
+    yoyo: true,
+    repeat: -1,
+    duration: 2.6,
+    ease: 'sine.inOut'
+  });
+
+  gsap.to('.async-hourglass', {
+    scrollTrigger: {
+      trigger: '.ch-async',
+      start: 'top 70%',
+      toggleActions: 'play none none reverse'
+    },
+    scaleY: 1.05,
+    scaleX: 0.97,
+    yoyo: true,
+    repeat: -1,
+    duration: 1.5,
+    ease: 'sine.inOut'
+  });
+
+  /* SHOWPIECE */
+  const showpiece = document.querySelector('.showpiece');
+  if (showpiece) {
+    const steps = gsap.utils.toArray('.showpiece__step');
+
+    if (!steps.length) {
+      ScrollTrigger.refresh();
+      return;
+    }
+
+    gsap.set(steps, { autoAlpha: 0, y: 40, scale: 0.98 });
+    gsap.set(steps[0], { autoAlpha: 1, y: 0, scale: 1 });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: showpiece,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1,
+        pin: '.showpiece__sticky',
+        anticipatePin: 1
+      }
+    });
+
+    steps.forEach((step, i) => {
+      if (i === 0) return;
+
+      tl.to(steps[i - 1], {
+        autoAlpha: 0,
+        y: -32,
+        scale: 0.97,
+        duration: 0.9,
+        ease: 'power2.inOut'
+      })
+        .to(step, {
+        autoAlpha: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.9,
+        ease: 'power2.out'
+      }, '<0.08');
+    });
+  }
+
+  gsap.from('.footer', {
+    scrollTrigger: {
+      trigger: '.footer',
+      start: 'top 90%'
+    },
+    opacity: 0,
+    y: 30,
+    duration: 1,
+    ease: 'power2.out'
+  });
+
+  ScrollTrigger.refresh();
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  ThemeManager.init();
+  StarsCanvas.init();
+
+  if (!prefersReducedMotion) {
+    Fireflies.init();
+    CursorSparkle.init();
+  }
+
+  requestAnimationFrame(() => {
+    initGSAP();
+    Nav.init();
+    StoryNav.init();
+  });
+
+  const themeBtn = document.getElementById('theme-toggle');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', () => ThemeManager.toggle());
+  }
+
+  document.querySelectorAll('[data-scroll-to]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const target = document.querySelector(btn.dataset.scrollTo);
+      if (!target) return;
+
+      if (btn.classList.contains('btn-restart')) {
+        playRestartStoryAnimation(btn, target);
+        return;
+      }
+
+      scrollToTarget(target);
+    });
+  });
+});

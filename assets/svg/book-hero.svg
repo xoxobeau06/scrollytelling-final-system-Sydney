@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320" role="img" aria-label="Enchanted open book">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8f1e3"/>
+      <stop offset="100%" stop-color="#ead8b8"/>
+    </linearGradient>
+    <linearGradient id="cover" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3d2e1a"/>
+      <stop offset="100%" stop-color="#1a1209"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="45%">
+      <stop offset="0%" stop-color="#fff7de" stop-opacity="0.95"/>
+      <stop offset="55%" stop-color="#e8b84b" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#e8b84b" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#1a1209" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  <rect width="400" height="320" rx="28" fill="url(#bg)"/>
+  <circle cx="200" cy="138" r="112" fill="url(#glow)"/>
+  <g filter="url(#shadow)">
+    <path d="M68 102C104 78 154 74 195 96V244C150 222 104 226 68 252C59 258 48 251 48 240V116C48 109 61 101 68 102Z" fill="url(#cover)" stroke="#c9922f" stroke-width="3"/>
+    <path d="M332 102C296 78 246 74 205 96V244C250 222 296 226 332 252C341 258 352 251 352 240V116C352 109 339 101 332 102Z" fill="url(#cover)" stroke="#c9922f" stroke-width="3"/>
+    <path d="M82 120C115 100 157 97 195 114V229C156 213 118 217 82 238Z" fill="#f5efe0" stroke="#c9922f" stroke-width="2.5"/>
+    <path d="M318 120C285 100 243 97 205 114V229C244 213 282 217 318 238Z" fill="#f5efe0" stroke="#c9922f" stroke-width="2.5"/>
+    <path d="M195 95C199 90 201 90 205 95V248C202 252 198 252 195 248Z" fill="#c9922f"/>
+  </g>
+  <g fill="none" stroke="#b85c6e" stroke-linecap="round">
+    <path d="M112 144H170" stroke-width="4"/>
+    <path d="M112 164H180" stroke-width="4"/>
+    <path d="M112 184H160" stroke-width="4"/>
+    <path d="M220 144H286" stroke-width="4"/>
+    <path d="M220 164H296" stroke-width="4"/>
+    <path d="M220 184H274" stroke-width="4"/>
+  </g>
+  <g fill="#c9922f">
+    <path d="M198 46L203 60L218 65L203 70L198 84L193 70L178 65L193 60Z"/>
+    <circle cx="260" cy="68" r="4"/>
+    <circle cx="142" cy="74" r="3"/>
+    <circle cx="298" cy="96" r="3"/>
+  </g>
+</svg>

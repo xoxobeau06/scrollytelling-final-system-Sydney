@@ -1,1463 +1,908 @@
-/* =========================================================
-   styles.css
-   Lost in the Scroll — Scroll.Master System
+/* ═══════════════════════════════════════════════════════
+   STYLES.CSS — Main Stylesheet
+   Lost in the Scroll: A Fairytale of JavaScript
+   V2 cleanup
+   ═══════════════════════════════════════════════════════ */
 
-   TABLE OF CONTENTS
-   01) Base / Layout
-   02) Accessibility (Skip Link)
-   03) Section Rhythm
-   04) Typography Helpers
-   05) Shared Components
-       - Theme Toggle
-       - Button System
-       - Footer
-   06) HERO
-   07) CHAPTER 1 — The First Spell
-   08) CHAPTER 2 — Naming Your Grimoire
-   09) CHAPTER 3 — The Forked Path
-   10) CHAPTER 4 — Channeling Energy
-   11) CHAPTER 5 — The Five Schools
-   12) CHAPTER 6 — The Archive Remembers
-   13) CLOSING — Reset the Field
-   ========================================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-
-/* =========================================================
-   01) Base / Layout
-   ========================================================= */
-
-/* Base reset-ish */
-* { box-sizing: border-box; }
-html, body { height: 100%; }
+html {
+  scroll-behavior: auto;
+}
 
 body {
-  margin: 0;
-  background: var(--surface-background);
-  color: var(--text-primary);
   font-family: var(--font-body);
-  font-size: var(--size-body-md);
-  line-height: var(--line-body);
+  font-size: var(--fs-body);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  line-height: var(--lh-body);
+  overflow-x: hidden;
+  transition:
+    background-color 0.4s var(--ease-dream),
+    color 0.4s var(--ease-dream);
 }
 
-/* Container */
-.container {
-  width: min(72rem, 100%);
-  margin-inline: auto;
-  padding-inline: var(--space-md);
+#smooth-wrapper {
+  overflow: hidden;
 }
 
-
-/* =========================================================
-   02) Accessibility (Skip Link)
-   ========================================================= */
-
-.skip-link {
-  position: absolute;
-  left: -999px;
-  top: var(--space-md);
+#smooth-content {
+  will-change: transform;
 }
 
-.skip-link:focus {
-  left: var(--space-md);
+section {
+  scroll-margin-top: 6rem;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  line-height: var(--lh-tight);
+  color: var(--text-primary);
+}
+
+h1 {
+  font-size: var(--fs-hero);
+  font-style: italic;
+}
+
+h2 {
+  font-size: var(--fs-chapter);
+}
+
+h3 {
+  font-size: var(--fs-subhead);
+}
+
+p {
+  font-size: var(--fs-body);
+  color: var(--text-secondary);
+  max-width: 65ch;
+}
+
+em {
+  color: var(--text-accent);
+  font-style: italic;
+}
+
+strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+a {
+  color: var(--text-link);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border-faint);
+  transition:
+    color var(--dur-fast),
+    border-color var(--dur-fast);
+}
+
+a:hover {
+  color: var(--text-rose);
+  border-color: var(--text-rose);
+}
+
+/* NAV */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-nav);
   padding: var(--space-sm) var(--space-md);
-  background: var(--surface-elevated);
-  border: 1px solid var(--surface-border);
-  border-radius: var(--radius-md);
-}
-
-
-/* =========================================================
-   03) Section Rhythm
-   ========================================================= */
-
-.section {
-  min-height: 100svh;
-  padding: var(--space-xl) 0;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  transition:
+    background var(--dur-med) var(--ease-dream),
+    box-shadow var(--dur-med) var(--ease-dream),
+    border-color var(--dur-med) var(--ease-dream);
 }
 
-.section--alt {
-  background: var(--surface-panel);
+.nav.scrolled {
+  background: var(--overlay-mist);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-soft);
+  border-bottom: 1px solid var(--border-faint);
 }
 
-.section--final {
-  min-height: auto;
-  padding-bottom: calc(var(--space-xl) * 1.5);
+.nav__logo {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--text-accent);
+  border: none;
+  letter-spacing: 0.05em;
 }
 
+.nav__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
 
-/* =========================================================
-   04) Typography Helpers
-   ========================================================= */
-
-.eyebrow {
-  margin: 0 0 var(--space-sm);
-  color: var(--text-muted);
-  font-family: var(--font-code);
-  font-size: var(--size-body-sm);
+.btn-theme {
+  background: transparent;
+  border: 1px solid var(--border-faint);
+  color: var(--text-accent);
+  cursor: pointer;
+  border-radius: var(--radius-pill);
+  padding: 0.4rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
   letter-spacing: 0.06em;
-  text-transform: uppercase;
+  transition:
+    background var(--dur-fast) var(--ease-dream),
+    border-color var(--dur-fast) var(--ease-dream),
+    color var(--dur-fast) var(--ease-dream),
+    box-shadow var(--dur-fast) var(--ease-dream);
 }
 
-.display {
-  margin: 0 0 var(--space-md);
-  font-family: var(--font-display);
-  font-size: var(--size-hero);
-  line-height: var(--line-tight);
+.btn-theme:hover {
+  background: var(--overlay-veil);
+  border-color: var(--border-accent);
 }
 
-.headline {
-  margin: 0 0 var(--space-md);
-  font-family: var(--font-display);
-  font-size: var(--size-section);
-  line-height: var(--line-normal);
-}
-
-.lede {
-  max-width: 60ch;
-  font-size: var(--size-body-lg);
-  color: var(--text-secondary);
-}
-
-.subhead {
-  margin: 0 0 var(--space-sm);
-  font-family: var(--font-display);
-  font-size: var(--size-subsection);
-  line-height: var(--line-normal);
-}
-
-
-/* Cards */
-.card {
-  margin-top: var(--space-lg);
-  padding: var(--space-lg);
-  background: var(--surface-elevated);
-  border: 1px solid var(--surface-border);
-  border-radius: var(--radius-lg);
-}
-
-
-/* Links + focus */
-a {
-  color: var(--link);
-  transition: color 0.2s ease;
-}
-
-a:hover { color: var(--link-hover); }
-
-a:focus-visible {
-  outline: 2px solid var(--focus-ring);
+.btn-theme:focus-visible {
+  outline: 2px solid var(--border-accent);
   outline-offset: 3px;
+  box-shadow: var(--focus-ring);
 }
 
-
-/* Mobile readability */
-@media (max-width: 720px) {
-  .display { font-size: 64px; } /* temporary; can token-ize later */
-  .headline { font-size: 36px; }
-  .section { padding: var(--space-lg) 0; }
-}
-
-
-/* =========================================================
-   05) Shared Components
-   ========================================================= */
-
-/* ======================
-   STICKY THEME TOGGLE
-   ====================== */
-
-#themeToggle {
+/* STORY NAV */
+.story-nav {
   position: fixed;
-  top: var(--space-lg);
-  right: var(--space-lg);
-  z-index: 1000;
+  right: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: var(--z-nav);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border-faint);
+  border-radius: var(--radius-lg);
+  background: var(--bg-elevated);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-soft);
+}
 
-  min-width: 88px;
-  height: 48px;
-  padding: 0 1rem;
-  border-radius: 999px;
-
-  background: var(--surface-elevated);
-  border: 2px solid var(--surface-border);
-
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-
+.story-nav__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 7.5rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
   font-family: var(--font-body);
-  font-size: var(--size-body-sm);
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-#themeToggle:hover {
-  background: var(--accent-highlight);
-  border-color: var(--accent-highlight);
-  transform: scale(1.05);
-}
-
-#themeToggle:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 4px;
-}
-
-/* Mobile: smaller and adjusted position */
-@media (max-width: 720px) {
-  #themeToggle {
-    min-width: 78px;
-    height: 44px;
-    padding: 0 0.85rem;
-    top: var(--space-md);
-    right: var(--space-md);
-    font-size: 14px;
-  }
-}
-
-
-/* ======================
-   BUTTON SYSTEM
-   ====================== */
-
-.btn {
-  display: inline-block;
-  padding: 0.75rem 2rem;
-  border-radius: 999px;
-  font-family: var(--font-body);
-  font-size: var(--size-body-md);
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: 2px solid transparent;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   background: transparent;
+  transition:
+    color var(--dur-fast) var(--ease-dream),
+    border-color var(--dur-fast) var(--ease-dream),
+    background var(--dur-fast) var(--ease-dream),
+    transform var(--dur-fast) var(--ease-dream);
 }
 
-.btn:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 4px;
+.story-nav__link:hover {
+  color: var(--text-accent);
+  border-color: var(--border-faint);
+  background: var(--overlay-veil);
+  transform: translateX(-2px);
 }
 
-/* Ghost button (transparent with border) */
-.btn--ghost {
-  border: 2px solid var(--text-muted);
-  color: var(--text-primary);
-  background: transparent;
+.story-nav__link.is-active {
+  color: var(--text-on-accent);
+  background: var(--text-accent);
+  border-color: var(--border-accent);
 }
 
-.btn--ghost:hover {
-  border-color: var(--accent-highlight);
-  color: var(--accent-highlight);
+/* CANVAS / EFFECTS */
+#stars-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
 }
 
-/* Outline button */
-.btn-outline,
-.btn--outline {
-  border: 2px solid currentColor;
-  background: transparent;
+.firefly {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--star-glow);
+  box-shadow: 0 0 8px 2px var(--star-glow);
+  pointer-events: none;
 }
 
-.btn-outline:hover,
-.btn--outline:hover {
-  background: currentColor;
-  color: var(--text-inverse);
+.cursor-sparkle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  width: 8px;
+  height: 8px;
+  background: var(--star-glow);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--star-glow);
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s;
 }
 
-/* Solid button */
-.btn-solid,
-.btn--solid {
-  background: var(--accent-highlight);
-  color: var(--text-inverse);
-  border: 2px solid var(--accent-highlight);
+.cursor-sparkle--warm {
+  background: var(--star-glow);
+  box-shadow: 0 0 10px 2px var(--star-glow);
 }
 
-.btn-solid:hover,
-.btn--solid:hover {
-  background: transparent;
-  color: var(--accent-highlight);
+.restart-comet {
+  z-index: 10000;
+  mix-blend-mode: screen;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, var(--star-glow) 46%, rgba(232, 213, 163, 0) 75%);
+  box-shadow: 0 0 18px 6px var(--star-glow);
 }
 
-/* Gold variant */
-.btn-gold,
-.btn--gold {
-  color: var(--accent-highlight);
-  border-color: var(--accent-highlight);
+/* BASE CHAPTERS */
+.chapter {
+  position: relative;
+  z-index: var(--z-content);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-xl) var(--space-md);
 }
 
-.btn-gold:hover,
-.btn--gold:hover {
-  background: var(--accent-highlight);
-  color: var(--text-inverse);
-}
-
-
-/* ======================
-   SITE FOOTER
-   ====================== */
-
-.site-footer {
-  background: var(--surface-panel);
-  border-top: 1px solid var(--surface-border);
-  padding: var(--space-xl) 0;
+.chapter--centered {
+  align-items: center;
   text-align: center;
 }
 
-.micro {
-  margin: 0;
-  font-family: var(--font-code);
-  font-size: var(--size-body-sm);
-  color: var(--text-muted);
+.chapter__inner {
+  max-width: 980px;
+  margin: 0 auto;
+  width: 100%;
 }
 
+.chapter__inner--center {
+  text-align: center;
+}
 
-/* =========================================================
-   06) HERO CINEMATIC STYLE
-   ========================================================= */
+.chapter__heading {
+  margin: 0;
+  text-wrap: balance;
+}
 
-.section--hero {
+.chapter__body {
+  display: grid;
+  gap: var(--space-sm);
+  max-width: 42ch;
+  align-content: start;
+}
+
+.chapter__body > * {
+  min-width: 0;
+}
+
+.chapter__body--center {
+  margin: var(--space-md) auto 0;
+  max-width: 55ch;
+}
+
+.chapter-label {
+  font-family: var(--font-drop-cap);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-accent);
+  opacity: 0.8;
+  margin-bottom: var(--space-xs);
+  display: block;
+}
+
+.drop-cap::first-letter {
+  font-family: var(--font-drop-cap);
+  font-size: 4.5em;
+  font-weight: 600;
+  float: left;
+  line-height: 0.75;
+  margin: 0.1em 0.12em 0 0;
+  color: var(--text-accent);
+}
+
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin: var(--space-md) 0;
+  color: var(--text-accent);
+}
+
+.ornament__line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-accent), transparent);
+}
+
+.ornament__symbol {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.ornament--end {
+  margin-top: var(--space-xl);
+}
+
+.ornament--footer {
+  max-width: 400px;
+  margin: 0 auto var(--space-md);
+}
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   position: relative;
+  overflow: hidden;
+  padding: var(--space-xl) var(--space-md);
+}
+
+.hero__eyebrow {
+  margin-bottom: var(--space-sm);
+}
+
+.hero__title {
+  margin: 0;
+  text-wrap: balance;
+}
+
+.hero__subtitle {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: var(--fs-subhead);
+  color: var(--text-secondary);
+  margin: var(--space-sm) 0 var(--space-md);
+  letter-spacing: 0.05em;
+}
+
+.hero__desc {
+  margin: var(--space-sm) auto 0;
+  text-align: center;
+  max-width: 50ch;
+}
+
+.hero__illustration {
+  max-width: 340px;
+  margin-top: var(--space-md);
+}
+
+.hero__scroll-cue {
+  position: absolute;
+  bottom: var(--space-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-accent);
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: var(--fs-caption);
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+  animation: floatCue 2.5s ease-in-out infinite;
+}
+
+.hero__scroll-cue svg {
+  width: 24px;
+  height: 24px;
+}
+
+@keyframes floatCue {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+
+/* LAYOUT */
+.two-col {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--space-lg);
+  align-items: start;
+  margin-top: var(--space-md);
+}
+
+.two-col > * {
+  min-width: 0;
+}
+
+.two-col figure {
+  justify-self: center;
+  align-self: start;
+  width: min(100%, 400px);
+}
+
+figure {
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+}
+
+figcaption {
+  text-align: center;
+  font-style: italic;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  max-width: 34ch;
+  margin: 0 auto;
+}
+
+.illustration {
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 5 / 4;
+  object-fit: contain;
+  object-position: center;
+  margin: 0 auto;
+  display: block;
+  padding: clamp(0.9rem, 2vw, 1.35rem);
+  background: linear-gradient(180deg, var(--bg-elevated), var(--bg-card));
+  border: 1px solid var(--border-faint);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+/* MIST */
+.mist-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.mist-bg__layer {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 1;
+}
+
+/* SPELL SCROLL */
+.spell-scroll {
+  background: var(--code-bg);
+  border: 1px solid var(--border-faint);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  font-family: "Courier New", monospace;
+  font-size: var(--fs-code);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  color: var(--code-text);
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  box-shadow: var(--shadow-soft);
+  margin: var(--space-md) 0;
+}
+
+.spell-scroll::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0; 
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--text-accent), var(--text-rose), var(--code-string));
+}
+
+.spell-scroll.is-typing::after {
+  content: "";
+  position: absolute;
+  right: var(--space-md);
+  bottom: var(--space-md);
+  width: 0.62rem;
+  height: 1.05em;
+  background: var(--text-accent);
+  border-radius: 1px;
+  opacity: 0.95;
+  animation: code-caret-blink 0.9s steps(1, end) infinite;
+}
+
+@keyframes code-caret-blink {
+  0%, 49% {
+    opacity: 0.95;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+
+.spell-scroll .kw { color: var(--code-keyword); font-weight: 600; }
+.spell-scroll .str { color: var(--code-string); }
+.spell-scroll .fn { color: var(--code-function); }
+.spell-scroll .cm { color: var(--code-comment); font-style: italic; opacity: 0.85; }
+.spell-scroll .nm { color: var(--code-number); }
+
+/* CARDS */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+  align-items: stretch;
+}
+
+.cards-grid--epilogue {
+  max-width: 980px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.5rem);
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: var(--space-lg);
+}
+
+.cards-grid--epilogue .concept-card {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 0.55rem;
+  min-height: 220px;
+  padding: clamp(1.1rem, 2.2vw, 1.5rem);
+  background: linear-gradient(180deg, var(--bg-elevated), var(--bg-card));
+}
+
+.cards-grid--epilogue .concept-card__icon {
+  font-size: clamp(1.8rem, 2.8vw, 2.25rem);
+  margin-bottom: 0;
+  line-height: 1;
+}
+
+.cards-grid--epilogue .concept-card h3 {
+  font-size: clamp(1.08rem, 1.8vw, 1.3rem);
+  color: var(--text-primary);
+}
+
+.cards-grid--epilogue .concept-card p {
+  max-width: 28ch;
+  margin: 0;
+  font-size: clamp(0.96rem, 1.3vw, 1.04rem);
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.concept-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-faint);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
+  transition:
+    box-shadow var(--dur-med) var(--ease-dream),
+    transform var(--dur-med) var(--ease-fairy),
+    border-color var(--dur-fast) var(--ease-dream);
+  height: 100%;
+}
+
+.concept-card:hover {
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-4px);
+  border-color: var(--border-accent);
+}
+
+.concept-card__icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-sm);
+  display: block;
+}
+
+.concept-card p {
+  max-width: none;
+}
+
+.concept-card--center {
+  text-align: center;
+}
+
+/* SHOWPIECE */
+.showpiece {
+  position: relative;
+  height: 440vh;
+  z-index: var(--z-content);
+}
+
+.showpiece__sticky {
+  position: relative;
+  height: 100svh;
   min-height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-
-  background-image: url("scrollytelling-scrollMaster-System-Sydney-main/assets/images/mana.jpeg");
-  
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-/* Soft parchment wash overlay */
-.hero__overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-
-  background: rgba(243, 233, 210, 0.8);
-
-  mix-blend-mode: normal;
-  pointer-events: none;
-}
-
-.hero__scroll-fade {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background: var(--surface-background);
-  pointer-events: none;
-  transform: scaleY(0);
-  transform-origin: bottom center;
-  will-change: transform;
-}
-
-/* Content wrapper */
-.hero__content {
-  position: relative;
-  z-index: 3;
-  max-width: 900px;
-  padding: var(--space-xl);
-}
-
-/* Main title */
-.hero__title {
-  font-family: var(--font-display);
-  font-size: clamp(56px, 8vw, var(--size-hero));
-  line-height: 1.05;
-  margin: 0 0 var(--space-lg);
-  color: var(--text-primary);
-}
-
-.hero__subtitle {
-  display: block;
-  margin-top: var(--space-sm);
-}
-
-/* Tagline */
-.hero__tagline {
-  font-family: var(--font-body);
-  font-style: italic;
-  font-size: var(--size-body-lg);
-  color: var(--text-secondary);
-  max-width: 60ch;
-  margin: 0 auto var(--space-xl);
-  line-height: var(--line-body);
-}
-
-/* Gold outline button */
-.hero__cta {
-  display: inline-block;
-  padding: 0.8rem 2rem;
-  border-radius: 999px;
-  border: 2px solid var(--accent-highlight);
-  color: var(--accent-highlight);
-  font-family: var(--font-body);
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.hero__cta:hover {
-  background: var(--accent-highlight);
-  color: var(--text-inverse);
-}
-
-/* Dark mode adjustment */
-[data-theme="dark"] .hero__overlay {
-  background: rgba(14, 13, 18, 0.78);
-}
-
-
-/* =========================================================
-   07) CHAPTER 1 — THE FIRST SPELL
-   ========================================================= */
-
-.first-spell {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: var(--space-xl);
-  align-items: center;
-}
-
-/* Left column stacks panels */
-.first-spell__left {
-  display: grid;
-  gap: var(--space-lg);
-}
-
-/* Panel base (re-usable) */
-.panel {
-  background: var(--surface-panel);
-  border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-}
-
-/* Chapter title styling */
-.chapter-title {
-  margin: 0 0 var(--space-md);
-  font-family: var(--font-display);
-  font-size: var(--size-section);
-  line-height: var(--line-normal);
-  color: var(--mana-blue); /* matches your Figma’s blue title */
-}
-
-/* Inline link (console.log()) */
-.inline-link {
-  color: var(--mana-blue);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.inline-link:hover {
-  color: var(--accent-highlight);
-}
-
-/* Code panel */
-.panel--code {
-  background: var(--surface-panel);
-}
-
-/* Code block styling */
-.codeblock {
-  margin: 0;
-  font-family: var(--font-code);
-  font-size: var(--size-body-md);
-  line-height: var(--line-code);
-  color: var(--text-primary);
-  white-space: pre-wrap; /* keeps it from overflowing on mobile */
-}
-
-/* Make the first line (console.log...) pop like your blue */
-.codeblock code {
-  color: var(--mana-blue);
-}
-
-/* Spell card image */
-.spell-card {
-  width: min(520px, 100%);
-  height: auto;
-  display: block;
-  margin-inline: auto;
-}
-
-/* Mobile: stack */
-@media (max-width: 900px) {
-  .first-spell {
-    grid-template-columns: 1fr;
-  }
-
-  .first-spell__right {
-    order: -1; /* card on top on mobile (optional) */
-  }
-
-  .chapter-title {
-    font-size: clamp(32px, 5vw, var(--size-section));
-  }
-}
-
-
-/* =========================================================
-   08) CHAPTER 2 — NAMING YOUR GRIMOIRE
-   ========================================================= */
-
-.grimoire {
-  text-align: center;
-}
-
-.grimoire__header {
-  margin-bottom: var(--space-xl);
-}
-
-.grimoire__title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--size-section);
-  line-height: var(--line-normal);
-  color: var(--accent-highlight);
-}
-
-.grimoire__subtitle {
-  margin: var(--space-sm) 0 0;
-  font-family: var(--font-body);
-  font-size: var(--size-body-lg);
-  color: var(--text-secondary);
-}
-
-.grimoire__books {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-xl);
-  align-items: center;
-  justify-items: center;
-  margin: var(--space-xl) 0;
-}
-
-.book {
-  margin: 0;
-  position: relative;
-  display: grid;
-  place-items: center;
-}
-
-.book__img {
-  width: min(520px, 100%);
-  height: auto;
-  display: block;
-}
-
-.grimoire__body {
-  max-width: 75ch;
-  margin: 0 auto;
-  color: var(--text-secondary);
-}
-
-/* Inline code matches your “system” vibe */
-.grimoire__body code {
-  font-family: var(--font-code);
-  font-size: 0.95em;
-  padding: 0.1em 0.35em;
-  border-radius: 8px;
-  background: var(--surface-elevated);
-  border: 1px solid var(--surface-border);
-}
-/* Content overlay on top of the SVG */
-.book__content {
-  position: absolute;
-  inset: 0;
-}
-
-.book__text {
-  position: absolute;
-  left: 19.8%;
-  top: 35.5%;
-  width: 25.2%;
-  height: 35%;
-
-  font-family: var(--font-body);
-  font-size: clamp(0.76rem, 0.96vw, 0.94rem);
-  line-height: 1.34;
-  color: var(--surface-book-ink);
-
   overflow: hidden;
+  padding: clamp(1rem, 2.5vw, 2rem);
 }
 
-.book__text p {
-  margin: 0;
-}
-
-.book__text p,
-.book__code,
-.book__code code {
-  color: var(--surface-book-ink);
-}
-
-.book__code {
-  position: absolute;
-  left: 54.7%;
-  top: 35.5%;
-  width: 25.2%;
-  height: 35%;
-
-  margin: 0;
-  font-family: var(--font-code);
-  font-size: clamp(0.66rem, 0.86vw, 0.82rem);
-  line-height: 1.26;
-  color: var(--surface-book-ink);
-
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  overflow: hidden;
-}
-
-.book__code code {
-  display: block;
-  margin: 0;
-  white-space: inherit;
-}
-/* Mobile */
-@media (max-width: 900px) {
-  .grimoire__books {
-    grid-template-columns: 1fr;
-  }
-
-  .book__text,
-  .book__code {
-    top: 34.8%;
-    height: 36%;
-  }
-}
-.grimoire .book__text,
-.grimoire .book__text p,
-.grimoire .book__code,
-.grimoire .book__code code {
-  color: #1b1a1f;
-}
-
-
-/* =========================================================
-   09) CHAPTER 3 — THE FORKED PATH
-   ========================================================= */
-
-.fork {
-  text-align: center;
-}
-
-.fork__header {
-  max-width: 70ch;
-  margin: 0 auto var(--space-xl);
-}
-
-.fork__title {
-  margin: 0 0 var(--space-md);
-  font-family: var(--font-display);
-  font-size: var(--size-section);
-  line-height: var(--line-normal);
-  color: var(--mana-red);
-}
-
-.fork__lede {
-  margin: 0 auto var(--space-lg);
-  color: var(--text-secondary);
-  font-size: var(--size-body-lg);
-}
-
-.fork__highlight {
-  color: var(--mana-red);
-  font-weight: 700;
-}
-
-/* Outline button */
-.fork__cta {
-  display: inline-block;
-  padding: 0.8rem 2.2rem;
-  border-radius: 999px;
-  border: 2px solid var(--mana-red);
-  color: var(--mana-red);
-  text-decoration: none;
-  font-family: var(--font-body);
-  transition: all 0.2s ease;
-}
-
-.fork__cta:hover {
-  background: var(--mana-red);
-  color: var(--text-inverse);
-}
-
-/* Two cards */
-.fork__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-xl);
-  align-items: start;
-  margin: var(--space-xl) 0;
-}
-
-.fork-card {
-  background: var(--surface-panel);
-  border: 1px solid var(--mana-red);
-  border-radius: var(--radius-lg);
-  padding: var(--space-xl);
-  text-align: center;
-}
-
-.fork-card__title {
-  margin: 0 0 var(--space-sm);
-  font-family: var(--font-display);
-  font-size: var(--size-subsection);
-  color: var(--mana-red);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.fork-card__desc {
-  margin: 0 0 var(--space-lg);
-  color: var(--text-secondary);
-}
-
-/* Code panel inside */
-.fork-code {
-  margin: 0;
-  padding: var(--space-lg);
-  background: var(--surface-elevated);
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(0,0,0,0.08);
-  text-align: left;
-
-  font-family: var(--font-code);
-  font-size: var(--size-body-md);
-  line-height: var(--line-code);
-  white-space: pre-wrap;
-}
-
-/* Footer paragraph */
-.fork__footer {
-  max-width: 85ch;
+.showpiece__stage {
+  position: relative;
+  width: min(760px, 92vw);
+  min-height: min(86svh, 780px);
   margin: 0 auto;
-  color: var(--text-secondary);
 }
 
-/* Mobile */
-@media (max-width: 900px) {
-  .fork__grid {
-    grid-template-columns: 1fr;
-  }
-
-  .fork-card {
-    padding: var(--space-lg);
-  }
-}
-/* =========================================
-   FORK: match card sizes + selection styles
-   ========================================= */
-
-/* Make the grid stretch items to the same height */
-.fork__grid {
-  align-items: stretch; /* <- important */
-}
-
-/* Make each card a "layout container" that can stretch nicely */
-.fork-card {
-  height: 100%;                 /* equal height in the grid row */
+.showpiece__step {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(1.25rem, 2.4vw, 2rem);
+  gap: var(--space-sm);
 }
 
-/* Make the code area consistent so one card doesn't get taller */
-.fork-code {
-  flex: 1;                      /* lets code panel take remaining space */
-  min-height: 260px;            /* tweak if needed to match Figma */
-  display: block;
+.showpiece__step > * {
+  max-width: 100%;
 }
 
-/* Optional: unify corner rounding + soften border feel (Figma-like) */
-.fork-card {
-  border-width: 2px;
+.showpiece__title {
+  font-size: clamp(2rem, 5vw, 3rem);
 }
 
-/* ---------- Selected state (base) ---------- */
-.fork-card.is-selected {
-  border-width: 3px;
-}
-
-/* Wizard selected: soft cool tint + subtle border pop */
-.fork-card--wizard.is-selected {
-  background: rgba(74, 144, 226, 0.10); /* soft blue tint */
-  border-color: var(--mana-blue);
-}
-
-/* Sorcerer selected: soft warm tint + border pop */
-.fork-card--sorcerer.is-selected {
-  background: rgba(217, 74, 74, 0.10); /* soft red/pink tint */
-  border-color: var(--mana-red);
-}
-
-/* Optional: selected title emphasis */
-.fork-card.is-selected .fork-card__title {
-  transform: translateY(-1px);
-}
-
-/* Make cards feel clickable */
-.fork-card {
-  cursor: pointer;
-  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
-}
-
-.fork-card:hover {
-  transform: translateY(-2px);
-}
-
-
-/* =========================================================
-   10) CHAPTER 4 — CHANNELING ENERGY
-   ========================================================= */
-
-.energy {
+.showpiece__text {
+  max-width: 45ch;
+  margin: 1rem auto 0;
   text-align: center;
 }
 
-.energy__header {
-  max-width: 80ch;
-  margin: 0 auto var(--space-xl);
-}
-
-.energy__title {
-  margin: 0 0 var(--space-md);
-  font-family: var(--font-display);
-  font-size: var(--size-section);
-  line-height: var(--line-normal);
-  color: var(--mana-green);
-}
-
-.energy__lede {
-  margin: 0 auto;
-  color: var(--text-secondary);
-  font-size: var(--size-body-lg);
-}
-
-.energy__highlight {
-  color: var(--mana-green);
-  font-weight: 700;
-}
-
-/* Big bordered panel */
-.energy__panel {
-  border: 2px solid var(--mana-green);
-  border-radius: var(--radius-lg);
-  padding: var(--space-xl);
-  background: var(--surface-panel);
-
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: var(--space-xl);
-  align-items: center;
-
+.showpiece__code {
+  width: min(100%, 400px);
+  margin: 1rem auto 0;
   text-align: left;
 }
 
-/* Left side */
-.energy__prompt {
-  margin: 0 0 var(--space-md);
-  color: var(--text-secondary);
-}
-
-.tap-card {
-  background: transparent;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  display: inline-block;
-}
-
-.tap-card img {
-  width: min(360px, 100%);
-  height: auto;
+.showpiece__emoji {
+  font-size: 3rem;
+  margin-top: 1rem;
   display: block;
-  transition: transform 0.25s ease;
-  transform-origin: center;
 }
 
-/* tapped state */
-.tap-card.is-tapped img {
-  transform: rotate(-90deg);
+/* PROGRESS */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--text-accent), var(--text-rose));
+  z-index: calc(var(--z-nav) + 1);
+  width: 0%;
+  transition: none;
 }
 
-.tap-card:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 6px;
-  border-radius: 12px;
-}
-
-/* Right side */
-.energy__codeWrap {
-  background: var(--surface-elevated);
-  border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-  border: 1px solid rgba(0,0,0,0.08);
-}
-
-.energy__code {
-  margin: 0;
-  font-family: var(--font-code);
-  font-size: var(--size-body-md);
-  line-height: var(--line-code);
-  white-space: pre-wrap;
-}
-
-.energy__body {
-  margin: var(--space-lg) 0 0;
+/* BLOCKQUOTE */
+blockquote {
+  border-left: 3px solid var(--border-accent);
+  padding-left: var(--space-md);
+  margin: var(--space-md) 0;
+  font-style: italic;
+  font-size: 1.2em;
   color: var(--text-secondary);
-  max-width: 60ch;
+  position: relative;
 }
 
-/* Mobile */
-@media (max-width: 900px) {
-  .energy__panel {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-
-  .energy__body {
-    margin-inline: auto;
-  }
-}
-
-
-/* =========================================================
-   11) CHAPTER 5 — THE FIVE SCHOOLS
-   ========================================================= */
-
-.schools {
-  text-align: center;
-}
-
-/* Header spacing feels roomy in your screenshot */
-.schools__header {
-  max-width: 90ch;
-  margin: 0 auto var(--space-xl);
-}
-
-.schools__title {
-  margin: 0 0 var(--space-md);
+blockquote::before {
+  content: '"';
   font-family: var(--font-display);
-  font-size: var(--size-section);
-  line-height: var(--line-normal);
-  color: var(--accent-highlight);
-}
-
-.schools__poem {
-  margin: 0 auto var(--space-lg);
-  color: var(--text-secondary);
-}
-
-.schools__poem p { margin: 0; }
-.schools__poem p + p { margin-top: 0.35rem; }
-
-.schools__body {
-  max-width: 95ch;
-  margin: var(--space-lg) auto 0;
-  color: var(--text-secondary);
-}
-
-/* Icon row: wider spacing like your screenshot */
-.schools__grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  column-gap: clamp(2rem, 4vw, 5rem);
-  row-gap: var(--space-xl);
-  align-items: start;
-  justify-items: center;
-  margin-top: var(--space-xl);
-}
-
-.school {
-  margin: 0;
-}
-
-/* Big clean circles (no border) */
-.school__icon {
-  width: 156px;            /* closer to your Figma */
-  height: 156px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-
-  border: none;            /* remove ring */
-  box-shadow: none;        /* screenshot looks flat */
-}
-
-/* IMPORTANT:
-   Make glyph styling work for BOTH:
-   - span icons (temporary)
-   - inline SVG icons (recommended for GSAP)
-*/
-.school__glyph {
-  /* If it's an SVG, this will size it */
-  width: 92px;
-  height: 92px;
-
-  /* If it's a span, these still apply */
-  display: block;
-
-  /* Make icon dark like your screenshot */
-  color: rgba(0, 0, 0, 0.85);
-  opacity: 1;
-
-  /* Helpful for GSAP transforms */
-  transform-origin: 50% 50%;
-}
-
-/* If you're still using spans, keep them from looking tiny */
-.school__glyph:not(svg) {
-  font-family: var(--font-code);
-  font-size: 56px;
+  font-size: 4em;
+  color: var(--border-faint);
+  position: absolute;
+  left: -0.1em;
+  top: -0.2em;
   line-height: 1;
 }
 
-/* Inline school icons are fill-based SVG paths */
-.school__glyph svg,
-svg.school__glyph {
-  fill: currentColor;
-  stroke: none;
+/* BADGES / KEYWORDS / BUTTONS */
+.keyword {
+  color: var(--text-accent);
+  font-family: "Courier New", monospace;
+  font-size: 0.9em;
+  background: var(--overlay-veil);
+  padding: 0.1em 0.4em;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-faint);
 }
 
-/* Labels: serif/display feel */
-.school__label {
-  margin-top: 18px;        /* matches screenshot spacing */
-  display: grid;
-  gap: 6px;
-}
-
-.school__name {
-  font-family: var(--font-display);
-  font-size: 1.55rem;
-  color: var(--text-primary);
-}
-
-.school__token {
-  font-family: var(--font-display); /* screenshot feels serif, not code */
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-}
-
-/* Circle fills (from your tokens) */
-.school--white .school__icon { background: var(--mana-white); }
-.school--green .school__icon { background: var(--mana-green); }
-.school--blue  .school__icon { background: var(--mana-blue); }
-.school--red   .school__icon { background: var(--mana-red); }
-.school--black .school__icon { background: var(--mana-black); }
-
-/* Black circle: icon should still be dark but readable
-   (your screenshot shows dark-on-dark, not white) */
-.school--black .school__glyph {
-  color: rgba(0, 0, 0, 0.45);
-}
-
-/* Responsive */
-@media (max-width: 1000px) {
-  .schools__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: var(--space-xl);
-  }
-}
-
-@media (max-width: 520px) {
-  .schools__grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-
-/* =========================================================
-   12) CHAPTER 6 — THE ARCHIVE REMEMBERS (localStorage)
-   ========================================================= */
-
-/* ======================
-   SECTION: THE ARCHIVE REMEMBERS (localStorage)
-   Match Figma layout
-   ====================== */
-
-.archive {
-  text-align: center;
-}
-
-.archive__title {
-  margin: 0 0 var(--space-xl);
-  font-family: var(--font-display);
-  font-size: var(--size-section);
-  line-height: var(--line-normal);
-  color: var(--accent-highlight);
-}
-
-/* Center the whole two-column region like Figma */
-.archive__grid {
-  display: grid;
-  align-items: start;
-}
-
-/* Column headings */
-.archive__colTitle {
-  margin: 0 0 1.25rem;
-  font-family: var(--font-display);
-  font-size: 44px;
-  line-height: 1.1;
-  color: var(--text-primary);
-}
-
-/* Left column list should feel “card list” and not stretch too wide */
-.deck {
-  margin: 0 auto;
-
-  display: grid;
-  gap: 1.25rem;
-}
-
-/* Scroll cards (Figma-ish) */
-.scroll-card {
-  width: 100%;
+.epilogue__actions {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  text-align: left;
-  padding: 1.1rem 1.35rem;
-  border-radius: 18px;
-
-  background: rgba(243, 233, 210, 0.55); /* parchment-ish */
-  border: 2px solid var(--accent-highlight);
-  color: var(--surface-book-ink);
-
-  cursor: pointer;
-  transition: transform 0.12s ease, opacity 0.2s ease;
+  justify-content: center;
+  margin-top: clamp(1.5rem, 4vw, 2.5rem);
+  position: relative;
+  z-index: 1;
 }
 
-.scroll-card:hover {
+.btn-restart {
+  background: transparent;
+  border: 1px solid var(--border-accent);
+  color: var(--text-accent);
+  border-radius: var(--radius-pill);
+  padding: 0.6rem 1.4rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease-dream),
+    color var(--dur-fast) var(--ease-dream),
+    transform var(--dur-fast) var(--ease-dream),
+    box-shadow var(--dur-fast) var(--ease-dream);
+}
+
+.btn-restart:hover {
+  background: var(--text-accent);
+  color: var(--text-on-accent);
   transform: translateY(-1px);
-  opacity: 0.98;
+  box-shadow: var(--shadow-soft);
 }
 
-.scroll-card__name {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 26px;
-  line-height: 1.05;
-}
-
-.scroll-card__meta {
-  display: block;
-  font-family: var(--font-code);
-  font-size: 14px;
-  color: var(--neutral-700);
-  margin-top: 0.25rem;
-}
-
-/* tiny save icon */
-.scroll-card__icon {
-  font-size: 18px;
-  opacity: 0.7;
-}
-
-.scroll-card__icon img {
-  width: 18px;
-  height: 18px;
-  display: block;
-}
-
-/* Code snippet under deck: NO hard border, just a soft panel like Figma */
-.archive__code {
-  width: min(520px, 100%);
-  margin: 1.75rem auto 0;
-
-  padding: 1.25rem 1.5rem;
-  border-radius: 18px;
-
-  background: rgba(214, 179, 106, 0.25); /* warm gold tint */
-  border: none;
-
-  font-family: var(--font-code);
-  font-size: 16px;
-  line-height: 1.55;
-  text-align: left;
-  white-space: pre-wrap;
-}
-
-/* Memory panel: the big soft box on the right */
-.memory {
-  background: rgba(214, 179, 106, 0.22); /* warm tint like Figma */
-}
-
-.memory__list {
-  display: grid;
-  gap: 1.25rem;
-  align-content: start;
-}
-
-/* Empty state centered inside panel */
-.memory__list.is-empty {
-  height: 100%;
-  place-content: start center;
-}
-
-.memory__empty {
-  margin: 0;
-  font-family: var(--font-code);
-  font-size: 14px;
-  color: var(--text-muted);
-}
-
-/* Saved items inside Memory look like cards */
-.memory-item {
-  background: rgba(243, 233, 210, 0.55);
-  border: 2px solid var(--accent-highlight);
-  border-radius: 18px;
-  padding: 1.1rem 1.35rem;
-  text-align: left;
-  color: var(--surface-book-ink);
-}
-
-.memory-item__name {
-  font-family: var(--font-display);
-  font-size: 26px;
-  line-height: 1.05;
-}
-
-.memory-item__meta {
-  font-family: var(--font-code);
-  font-size: 14px;
-  color: var(--neutral-700);
-  margin-top: 0.25rem;
-}
-
-/* ============================
-   ARCHIVE layout + footer
-   ============================ */
-
-#local-storage .container {
-  width: min(90rem, 100%);
-  padding-inline: clamp(1rem, 3vw, 2.5rem);
-}
-
-#local-storage.section {
-  padding: calc(var(--space-xl) * 1.25) 0;
-}
-
-.archive__grid {
-  width: 100%;
-  max-width: none;
-  margin: 0 auto;
-  grid-template-columns: minmax(520px, 1fr) minmax(520px, 1fr);
-  gap: clamp(2.5rem, 5vw, 5.5rem);
-}
-
-.deck,
-.memory,
-.archive__code {
-  width: min(640px, 100%);
-}
-
-.memory {
-  margin: 0 auto;
-  min-height: 420px;
-  padding: 1.75rem;
-  border-radius: 26px;
-}
-
-.archive__col--memory {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.archive__footer {
-  margin-top: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-}
-
-.archive__clear {
-  padding: 0.75rem 2.25rem;
-  border-radius: 999px;
-  border: 2px solid var(--mana-red);
-  background: transparent;
-  color: var(--mana-red);
-  font-family: var(--font-body);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.archive__clear:hover {
-  background: var(--mana-red);
-  color: var(--text-inverse);
-}
-
-.archive__body {
-  margin-top: 0.75rem;
-  width: min(60ch, 100%);
-  text-align: center;
-  font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.75;
-  color: rgba(27, 26, 31, 0.65);
-}
-
-.archive__body code {
-  font-family: var(--font-code);
-  font-size: 0.95em;
-  padding: 0.08em 0.32em;
-  border-radius: 10px;
-  background: rgba(243, 233, 210, 0.55);
-  border: 1px solid rgba(27, 26, 31, 0.1);
-}
-
-@media (max-width: 950px) {
-  .archive__grid {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
-  }
-
-  .memory {
-    min-height: 280px;
-  }
-
-  .archive__body {
-    width: min(62ch, 100%);
-  }
-}
-/* =========================================================
-   13) CLOSING — RESET THE FIELD
-   ========================================================= */
-
-.closing {
-  position: relative;
-  display: grid;
-  place-items: center;
-  padding-top: calc(var(--space-xl) * 1.25);
-  padding-bottom: calc(var(--space-xl) * 1.25);
-}
-
-/* Fan of cards behind */
-.closing__fan {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-55%);
-  width: min(820px, 92%);
-  height: 360px;
+.btn-restart.is-restarting {
   pointer-events: none;
+  box-shadow: 0 0 0 1px var(--border-accent), 0 0 16px 2px var(--star-glow);
 }
 
-.fan-card {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 220px;
-  height: 300px;
-  border-radius: 18px;
-  border: 6px solid var(--accent-highlight);
-  background: var(--surface-elevated);
-  transform-origin: bottom center;
-  transform: translate(-50%, -50%);
-  opacity: 0.95;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* Rotate each card */
-.fan-card--1 { transform: translate(-50%, -50%) rotate(-22deg); }
-.fan-card--2 { transform: translate(-50%, -50%) rotate(-10deg); }
-.fan-card--3 { transform: translate(-50%, -50%) rotate(0deg); }
-.fan-card--4 { transform: translate(-50%, -50%) rotate(10deg); }
-.fan-card--5 { transform: translate(-50%, -50%) rotate(22deg); }
-
-/* The main message panel */
-.closing__panel {
-  position: relative;
-  z-index: 2;
-  width: min(760px, 100%);
-  background: var(--surface-panel);
-  border: 2px solid var(--accent-highlight);
-  border-radius: var(--radius-lg);
-  padding: var(--space-xl);
+/* FOOTER */
+.footer {
   text-align: center;
+  padding: var(--space-xl) var(--space-md);
+  border-top: 1px solid var(--border-faint);
+  position: relative;
+  z-index: var(--z-content);
 }
 
-.closing__title {
-  margin: 0 0 var(--space-lg);
-  font-family: var(--font-display);
-  font-size: clamp(36px, 4vw, 56px);
-  color: var(--text-primary);
-}
-
-.closing__text {
-  color: var(--text-secondary);
-  max-width: 65ch;
+.footer p {
   margin: 0 auto;
+  text-align: center;
+  font-style: italic;
+  color: var(--text-secondary);
+  font-size: var(--fs-caption);
 }
 
-.closing__text p {
-  margin: 0;
+.footer__meta {
+  margin-top: 0.5rem !important;
+  opacity: 0.6;
 }
 
-.closing__text p + p {
-  margin-top: var(--space-md);
+/* SKIP */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  background: var(--text-accent);
+  color: var(--text-on-accent);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  z-index: 9999;
+  border: none;
+  transition: top 0.1s;
 }
 
-.closing__text strong {
-  color: var(--text-primary);
+.skip-link:focus {
+  top: 1rem;
 }
 
-/* Mobile adjustments */
-@media (max-width: 720px) {
-  .closing__fan {
-    height: 260px;
-    transform: translateY(-65%);
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: var(--radius-pill);
+}
+
+::selection {
+  background: var(--selection-bg);
+  color: var(--selection-text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--border-accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--focus-ring);
+}
+
+/* RESPONSIVE */
+@media (max-width: 980px) {
+  .story-nav {
+    display: none;
   }
 
-  .fan-card {
-    width: 160px;
-    height: 220px;
-    border-width: 5px;
-  }
-
-  .closing__panel {
-    padding: var(--space-lg);
+  .cards-grid--epilogue {
+    max-width: 760px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-.flow {
-  will-change: transform, opacity;
+
+@media (max-width: 768px) {
+  .chapter {
+    padding: var(--space-lg) var(--space-sm);
+  }
+
+  .hero {
+    padding-top: calc(var(--space-xl) + 3rem);
+  }
+
+  .two-col {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+    align-items: start;
+  }
+
+  .chapter__body {
+    max-width: none;
+  }
+
+  .spell-scroll {
+    font-size: 0.8rem;
+  }
+
+  .showpiece__step {
+    padding: var(--space-md);
+  }
+
+  .showpiece__stage {
+    min-height: 88svh;
+  }
+
+  .showpiece {
+    height: 520vh;
+  }
+
+  .cards-grid--epilogue {
+    max-width: 560px;
+    grid-template-columns: 1fr;
+    margin-bottom: var(--space-md);
+  }
+
+  .cards-grid--epilogue .concept-card {
+    min-height: 0;
+  }
 }
-.reset-btn{
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 1.25rem;
-  z-index: 999;
 
-  display: inline-block;
-  padding: 0.75rem 2rem;
-  border-radius: 999px;
+/* REDUCED MOTION */
+@media (prefers-reduced-motion: reduce) {
+  .hero__scroll-cue,
+  .firefly,
+  .cursor-sparkle {
+    animation: none;
+    display: none;
+  }
 
-  font-family: var(--font-body);
-  font-size: var(--size-body-md);
-
-  border: 2px solid var(--accent-highlight);
-  background: transparent;
-  color: var(--accent-highlight);
-
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.reset-btn:hover {
-  background: var(--accent-highlight);
-  color: var(--text-inverse);
-}
-
-.reset-btn:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 4px;
-}
-
-.reset-btn[hidden]{
-  display: none;
+  .spell-scroll.is-typing::after {
+    animation: none;
+  }
 }
