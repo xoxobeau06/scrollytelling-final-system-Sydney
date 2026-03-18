@@ -549,6 +549,7 @@ figcaption {
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-auto-rows: 1fr;
   gap: var(--space-md);
   margin-top: var(--space-lg);
   align-items: stretch;
@@ -594,6 +595,10 @@ figcaption {
 }
 
 .concept-card {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  align-content: start;
+  gap: 0.6rem;
   background: var(--bg-card);
   border: 1px solid var(--border-faint);
   border-radius: var(--radius-lg);
@@ -619,7 +624,7 @@ figcaption {
 .concept-card__icon {
   width: 3rem;
   height: 3rem;
-  margin-bottom: var(--space-sm);
+  margin-bottom: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -630,6 +635,13 @@ figcaption {
   height: 100%;
   display: block;
   object-fit: contain;
+  filter: var(--card-icon-filter);
+  transition: filter var(--dur-fast) var(--ease-dream);
+}
+
+.concept-card h3,
+.concept-card p {
+  margin: 0;
 }
 
 .concept-card p {
@@ -638,6 +650,7 @@ figcaption {
 
 .concept-card--center {
   text-align: center;
+  justify-items: center;
 }
 
 /* SHOWPIECE */

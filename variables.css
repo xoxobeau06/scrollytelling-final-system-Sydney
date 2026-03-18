@@ -134,6 +134,8 @@
 
   --scrollbar-track: var(--bg-primary);
   --scrollbar-thumb: var(--border-faint);
+
+  --card-icon-filter: none;
 }
 
 [data-theme="dark"] {
@@ -183,6 +185,8 @@
 
   --scrollbar-track: var(--bg-primary);
   --scrollbar-thumb: var(--border-faint);
+
+  --card-icon-filter: brightness(0) saturate(100%) invert(87%) sepia(17%) saturate(392%) hue-rotate(355deg) brightness(99%) contrast(91%);
 }
 
 [data-theme="system"] {
@@ -237,6 +241,8 @@
 
     --scrollbar-track: var(--bg-primary);
     --scrollbar-thumb: var(--border-faint);
+
+    --card-icon-filter: brightness(0) saturate(100%) invert(87%) sepia(17%) saturate(392%) hue-rotate(355deg) brightness(99%) contrast(91%);
   }
 }
 

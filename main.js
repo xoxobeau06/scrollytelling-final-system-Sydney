@@ -157,7 +157,6 @@ function createCodeTypewriter(block) {
   while (walker.nextNode()) {
     const node = walker.currentNode;
     if (!node.nodeValue || !node.nodeValue.length) continue;
-
     textNodes.push({
       node,
       fullText: node.nodeValue
@@ -224,43 +223,83 @@ function createCodeTypewriter(block) {
 /* THEME */
 const ThemeManager = {
   KEY: 'tale-theme',
+  THEMES: ['system', 'light', 'dark'],
 
   init() {
     const saved = localStorage.getItem(this.KEY);
+    const initialMode = this.THEMES.includes(saved) ? saved : 'system';
+    this.apply(initialMode, { persist: false });
 
-    if (saved) {
-      this.apply(saved);
-    } else {
-      const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      this.apply(sysDark ? 'dark' : 'light');
-    }
-
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      if (!localStorage.getItem(this.KEY)) {
-        this.apply(e.matches ? 'dark' : 'light');
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const onSystemThemeChange = () => {
+      if (this.getCurrentMode() === 'system') {
+        this.updateButton('system');
       }
-    });
+    };
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', onSystemThemeChange);
+    } else if (typeof mediaQuery.addListener === 'function') {
+      mediaQuery.addListener(onSystemThemeChange);
+    }
   },
 
-  apply(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
+  getCurrentMode() {
+    const mode = document.documentElement.getAttribute('data-theme');
+    return this.THEMES.includes(mode) ? mode : 'system';
+  },
 
+  getNextMode(mode = this.getCurrentMode()) {
+    const currentIndex = this.THEMES.indexOf(mode);
+    const nextIndex = (currentIndex + 1) % this.THEMES.length;
+    return this.THEMES[nextIndex];
+  },
+
+  getEffectiveTheme(mode = this.getCurrentMode()) {
+    if (mode === 'system') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    return mode;
+  },
+
+  updateButton(mode) {
     const btn = document.getElementById('theme-toggle');
     if (!btn) return;
 
-    if (theme === 'dark') {
-      btn.textContent = '☀ Dawn';
-      btn.setAttribute('aria-label', 'Switch to light mode');
-    } else {
+    if (mode === 'system') {
+      btn.textContent = '◐ System';
+    } else if (mode === 'dark') {
       btn.textContent = '☽ Dusk';
-      btn.setAttribute('aria-label', 'Switch to dark mode');
+    } else {
+      btn.textContent = '☀ Dawn';
     }
+
+    const effective = this.getEffectiveTheme(mode);
+    const next = this.getNextMode(mode);
+    const currentLabel = mode === 'system'
+      ? `system (${effective})`
+      : mode;
+
+    btn.setAttribute('aria-label', `Theme: ${currentLabel}. Switch to ${next} theme`);
+    btn.setAttribute('title', `Theme: ${currentLabel}. Next: ${next}`);
+  },
+
+  apply(theme, options = {}) {
+    const { persist = true } = options;
+    const mode = this.THEMES.includes(theme) ? theme : 'system';
+    document.documentElement.setAttribute('data-theme', mode);
+
+    if (persist) {
+      localStorage.setItem(this.KEY, mode);
+    }
+
+    this.updateButton(mode);
   },
 
   toggle() {
-    const current = document.documentElement.getAttribute('data-theme');
-    const next = current === 'dark' ? 'light' : 'dark';
-    localStorage.setItem(this.KEY, next);
+    const current = this.getCurrentMode();
+    const next = this.getNextMode(current);
     this.apply(next);
   }
 };
@@ -928,6 +967,12 @@ function initGSAP() {
     ease: 'sine.inOut'
   });
 
+  /* =====================================================
+     PRESENT THIS SECTION IN CLASS
+     SHOWPIECE = BEST SPEAKING SECTION
+     This is the part to walk through line by line.
+     ===================================================== */
+
   /* SHOWPIECE */
   const showpiece = document.querySelector('.showpiece');
   if (showpiece) {
@@ -938,9 +983,13 @@ function initGSAP() {
       return;
     }
 
+    // Set all steps hidden first
     gsap.set(steps, { autoAlpha: 0, y: 40, scale: 0.98 });
+
+    // Show the first step as the starting state
     gsap.set(steps[0], { autoAlpha: 1, y: 0, scale: 1 });
 
+    // Create a timeline controlled by scroll
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: showpiece,
@@ -952,6 +1001,7 @@ function initGSAP() {
       }
     });
 
+    // Sequence each step out and the next step in
     steps.forEach((step, i) => {
       if (i === 0) return;
 
@@ -963,14 +1013,18 @@ function initGSAP() {
         ease: 'power2.inOut'
       })
         .to(step, {
-        autoAlpha: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.9,
-        ease: 'power2.out'
-      }, '<0.08');
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.9,
+          ease: 'power2.out'
+        }, '<0.08');
     });
   }
+
+  /* =====================================================
+     END PRESENTATION SECTION
+     ===================================================== */
 
   gsap.from('.footer', {
     scrollTrigger: {
