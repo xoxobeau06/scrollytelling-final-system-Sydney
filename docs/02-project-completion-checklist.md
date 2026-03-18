@@ -6,8 +6,8 @@ Use this checklist while building.
 
 - [X] Live GitHub Pages URL
 - [X] Public repository URL
-- [ ] All required Project 2 issues are closed
-- [ ] `Project 2 Master Checklist` is fully checked off
+- [X] All required Project 2 issues are closed
+- [X] `Project 2 Master Checklist` is fully checked off
 
 ## Build + Story
 
@@ -53,4 +53,4 @@ Use this checklist while building.
 
 ## README (Project Documentation + Reflection)
 
-- [ ] README includes project title, description (multiple paragraphs, ~750 words or several hundred), links (live, repo), tech stack, and reflection content (metaphor summary, proudest section, bug solved, accessibility decision, what to improve)
+- [X] README includes project title, description (multiple paragraphs, ~750 words or several hundred), links (live, repo), tech stack, and reflection content (metaphor summary, proudest section, bug solved, accessibility decision, what to improve)
