@@ -41,17 +41,17 @@ You will use issues to:
 6. Create all required sub-issues listed in your master issue.
 
 7. Complete kickoff build targets:
-- [ ] Full project structure present
-- [ ] Story draft is at least 90% complete
-- [ ] ScrollTrigger is registered and active in at least one section
-- [ ] ScrollSmoother setup is in place (`#smooth-wrapper`, `#smooth-content`)
+- [X] Full project structure present
+- [X] Story draft is at least 90% complete
+- [X] ScrollTrigger is registered and active in at least one section
+- [X] ScrollSmoother setup is in place (`#smooth-wrapper`, `#smooth-content`)
 
 ## What To Submit In Canvas
 
-- [ ] New repo URL
-- [ ] Live GitHub Pages URL
-- [ ] Link to your `Project 2 Master Checklist` issue
-- [ ] Screenshot of one working scroll-triggered section
+- [X] New repo URL
+- [X] Live GitHub Pages URL
+- [X] Link to your `Project 2 Master Checklist` issue
+- [X] Screenshot of one working scroll-triggered section
 
 ## Grading (10 points, Complete/Incomplete style)
 
