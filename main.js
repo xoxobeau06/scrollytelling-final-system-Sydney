@@ -804,7 +804,7 @@ function initGSAP() {
     });
   });
 
-  gsap.utils.toArray('.cards-grid').forEach((grid) => {
+  gsap.utils.toArray('.cards-grid:not(.cards-grid--epilogue)').forEach((grid) => {
     const cards = grid.querySelectorAll('.concept-card');
 
     gsap.from(cards, {

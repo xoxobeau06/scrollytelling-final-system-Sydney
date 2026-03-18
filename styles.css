@@ -930,3 +930,31 @@ blockquote::before {
     animation: none;
   }
 }
+.cards-grid--epilogue .concept-card {
+  opacity: 0.3;
+  transform: translateY(18px) scale(0.97);
+  filter: blur(1.8px);
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease,
+    filter 0.45s ease,
+    box-shadow var(--dur-med) var(--ease-dream),
+    border-color var(--dur-fast) var(--ease-dream);
+}
+
+/* Hover/focus reveals epilogue cards with a soft fade-in. */
+.cards-grid--epilogue .concept-card:hover,
+.cards-grid--epilogue .concept-card:focus-within {
+  opacity: 1 !important;
+  transform: translateY(0) scale(1) !important;
+  filter: blur(0) !important;
+  box-shadow: 0 10px 30px rgba(201, 146, 47, 0.25);
+}
+
+@media (hover: none) {
+  .cards-grid--epilogue .concept-card {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
